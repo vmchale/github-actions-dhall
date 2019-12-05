@@ -80,6 +80,7 @@ in  { VersionInfo = VersionInfo
     , haskellEnv = haskellEnv
     , defaultEnv = defaultEnv
     , latestEnv = latestEnv
+    , defaultCi = defaultCi
     , defaultWithSteps = defaultWithSteps
     , CI = CI
     }
