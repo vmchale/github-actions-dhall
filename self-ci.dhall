@@ -2,6 +2,7 @@ let haskellCi = ./haskell-ci.dhall
 
 let concatMap =
       https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/Text/concatMap
+
 let dhallInstall =
       haskellCi.BuildStep.Name
         { name = "Install dhall"
@@ -15,8 +16,17 @@ let dhallInstall =
 let checkDhall =
         λ(dhalls : List Text)
       → haskellCi.BuildStep.Name
-        { name = "Check Dhall"
-        , run = concatMap Text (λ(d : Text) → "dhall --file ${d}\n") dhalls }
+          { name = "Check Dhall"
+          , run =
+              concatMap
+                Text
+                (   λ(d : Text)
+                  → ''
+                    dhall --file ${d}
+                    ''
+                )
+                dhalls
+          }
 
 in    haskellCi.generalCi
         [ haskellCi.checkout
