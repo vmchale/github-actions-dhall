@@ -1,6 +1,6 @@
 # github-actions-dhall
 
-This library providers Dhall helper functions to generate YAML for
+This library provides Dhall helper functions to generate YAML for
 github actions.
 
 ## Example
@@ -53,7 +53,6 @@ on:
   - push
 ```
 
-Have a look at
 [libarchive](https://github.com/vmchale/libarchive/blob/master/github-action.dhall)
-and [lzlib](https://github.com/vmchale/lzlib/blob/master/haskell-ci.dhall) for
+and [lzlib](https://github.com/vmchale/lzlib/blob/master/haskell-ci.dhall) have
 more sophisticated examples.
