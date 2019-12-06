@@ -10,13 +10,14 @@ Store the following in `example.dhall`:
 ```dhall
 let haskellCi = https://raw.githubusercontent.com/vmchale/github-actions-dhall/master/haskell-ci.dhall
 
-in  haskellCi.generalCi
-      haskellCi.matrixSteps
-      ( Some
-          { ghc = [ haskellCi.GHC.GHC881, haskellCi.GHC.GHC865 ]
-          , cabal = [ haskellCi.Cabal.Cabal30 ]
-          }
-      ) : haskellCi.CI.Type
+in    haskellCi.generalCi
+        haskellCi.matrixSteps
+        ( Some
+            { ghc = [ haskellCi.GHC.GHC881, haskellCi.GHC.GHC865 ]
+            , cabal = [ haskellCi.Cabal.Cabal30 ]
+            }
+        )
+    : haskellCi.CI.Type
 ```
 
 Then, generate YAML with `dhall-to-yaml --file example.dhall`
