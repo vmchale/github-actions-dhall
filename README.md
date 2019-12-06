@@ -17,7 +17,7 @@ haskellCi.defaultCi
 Then, generate YAML with
 
 ```
-$ dhall --file example.yaml
+$ dhall-to-yaml --file example.yaml
 jobs:
   build:
     runs-on: ubuntu-latest
