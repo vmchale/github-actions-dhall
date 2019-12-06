@@ -13,6 +13,16 @@ let dhallInstall =
             ''
         }
 
+let dhallCache =
+      haskellCi.BuildStep.UseCache
+        { uses = "actions/cache@v1"
+        , with =
+            haskellCi.CacheCfg::{
+            , path = "~/.cabal/bin"
+            , key = "\${{ runner.os }}-cabal-\${{ hashFiles('**/*.log') }}"
+            }
+        }
+
 let checkDhall =
         λ(dhalls : List Text)
       → haskellCi.BuildStep.Name
@@ -37,6 +47,7 @@ let dhallCi =
             [ haskellCi.checkout
             , haskellCi.haskellEnv haskellCi.defaultEnv
             , dhallInstall
+            , dhallCache
             , checkDhall dhalls
             ]
             (None haskellCi.DhallMatrix)

@@ -10,9 +10,15 @@ let Cabal = < Cabal30 | Cabal24 | Cabal22 | Cabal20 >
 
 let VersionInfo = { ghc-version : Text, cabal-version : Text }
 
+let CacheCfg =
+      { Type = { path : Text, key : Text, restoreKeys : Optional Text }
+      , default = { restoreKeys = None Text }
+      }
+
 let BuildStep =
       < Uses : { uses : Text, with : Optional VersionInfo }
       | Name : { name : Text, run : Text }
+      | UseCache : { uses : Text, with : CacheCfg.Type }
       >
 
 let DhallVersion = { ghc-version : GHC, cabal-version : Cabal }
@@ -138,6 +144,7 @@ in  { VersionInfo = VersionInfo
     , Cabal = Cabal
     , DhallVersion = DhallVersion
     , DhallMatrix = DhallMatrix
+    , CacheCfg = CacheCfg
     , cabalDoc = cabalDoc
     , cabalTest = cabalTest
     , cabalDeps = cabalDeps
