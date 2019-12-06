@@ -137,6 +137,7 @@ in  { VersionInfo = VersionInfo
     , GHC = GHC
     , Cabal = Cabal
     , DhallVersion = DhallVersion
+    , DhallMatrix = DhallMatrix
     , cabalDoc = cabalDoc
     , cabalTest = cabalTest
     , cabalDeps = cabalDeps

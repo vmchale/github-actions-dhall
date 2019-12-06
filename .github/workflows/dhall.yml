@@ -1,0 +1,19 @@
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: "actions/checkout@v1"
+      - uses: "actions/setup-haskell@v1"
+        with:
+          cabal-version: "3.0"
+          ghc-version: "8.6.5"
+      - name: "Install dhall"
+        run: "cabal install dhall"
+      - name: "Check dhall"
+        run: |
+          dhall --file haskell-ci.dhall
+          dhall --file example.dhall
+          dhall --file self-ci.dhall
+name: "Haskell CI"
+on:
+  - push
