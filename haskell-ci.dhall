@@ -83,8 +83,11 @@ let defaultWith =
       → λ(mat : Optional Matrix)
       →   defaultCi
         ⫽ { jobs =
-              { build = { runs-on = defaultCi.jobs.build.runs-on, steps = sts }
-              , strategy = mat
+              { build =
+                  { runs-on = defaultCi.jobs.build.runs-on
+                  , steps = sts
+                  , strategy = mat
+                  }
               }
           }
 
