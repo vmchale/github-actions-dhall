@@ -10,7 +10,6 @@ let dhallInstall =
             ''
             cabal update
             cabal install dhall
-            export PATH=$HOME/.cabal/bin:$PATH
             ''
         }
 
@@ -19,14 +18,17 @@ let checkDhall =
       → haskellCi.BuildStep.Name
           { name = "Check Dhall"
           , run =
-              concatMap
-                Text
-                (   λ(d : Text)
-                  → ''
-                    dhall --file ${d}
-                    ''
-                )
-                dhalls
+                  ''
+                  export PATH=$HOME/.cabal/bin:$PATH
+                  ''
+              ++  concatMap
+                    Text
+                    (   λ(d : Text)
+                      → ''
+                        dhall --file ${d}
+                        ''
+                    )
+                    dhalls
           }
 
 let dhallCi =

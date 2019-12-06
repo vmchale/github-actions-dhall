@@ -3,7 +3,8 @@
 This library provides Dhall helper functions to generate YAML for
 github actions.
 
-github-actions-dhall is self-hosting.
+github-actions-dhall is
+[self-hosting](https://github.com/vmchale/github-actions-dhall/blob/master/self-ci.dhall).
 
 ## Example
 

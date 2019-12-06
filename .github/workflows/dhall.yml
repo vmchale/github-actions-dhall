@@ -11,9 +11,9 @@ jobs:
         run: |
           cabal update
           cabal install dhall
-          export PATH=$HOME/.cabal/bin:$PATH
       - name: "Check Dhall"
         run: |
+          export PATH=$HOME/.cabal/bin:$PATH
           dhall --file haskell-ci.dhall
           dhall --file example.dhall
           dhall --file self-ci.dhall
