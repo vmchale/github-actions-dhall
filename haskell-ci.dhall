@@ -5,6 +5,8 @@ let BuildStep =
       | Name : { name : Text, run : Text }
       >
 
+let Matrix = { matrix : { ghc : List Text, cabal : List Text } }
+
 let checkout =
       BuildStep.Uses { uses = "actions/checkout@v1", with = None VersionInfo }
 
@@ -15,6 +17,14 @@ let haskellEnv =
 let defaultEnv = { ghc-version = "8.6.5", cabal-version = "3.0" }
 
 let latestEnv = { ghc-version = "8.8.1", cabal-version = "3.0" }
+
+let matrixEnv =
+      { ghc-version = "\${{ matrix.ghc }}"
+      , cabal-version = "\${{ matrix.cabal }}"
+      }
+
+let mkMatrix =
+      λ(st : { ghc : List Text, cabal : List Text }) → Some { matrix = st }
 
 let cabalDeps =
       BuildStep.Name
@@ -36,11 +46,16 @@ let cabalTest = BuildStep.Name { name = "Tests", run = "cabal test" }
 
 let cabalDoc = BuildStep.Name { name = "Documentation", run = "cabal haddock" }
 
-
 let CI =
       { name : Text
       , on : List Text
-      , jobs : { build : { runs-on : Text, steps : List BuildStep } }
+      , jobs :
+          { build :
+              { runs-on : Text
+              , steps : List BuildStep
+              , strategy : Optional Matrix
+              }
+          }
       }
 
 let defaultCi =
@@ -57,21 +72,25 @@ let defaultCi =
                     , cabalTest
                     , cabalDoc
                     ]
+                , strategy = None Matrix
                 }
             }
         }
       : CI
 
-let defaultWithSteps =
+let defaultWith =
         λ(sts : List BuildStep)
+      → λ(mat : Optional Matrix)
       →   defaultCi
         ⫽ { jobs =
               { build = { runs-on = defaultCi.jobs.build.runs-on, steps = sts }
+              , strategy = mat
               }
           }
 
 in  { VersionInfo = VersionInfo
     , BuildStep = BuildStep
+    , Matrix = Matrix
     , cabalDoc = cabalDoc
     , cabalTest = cabalTest
     , cabalDeps = cabalDeps
@@ -80,7 +99,9 @@ in  { VersionInfo = VersionInfo
     , haskellEnv = haskellEnv
     , defaultEnv = defaultEnv
     , latestEnv = latestEnv
+    , matrixEnv = matrixEnv
     , defaultCi = defaultCi
-    , defaultWithSteps = defaultWithSteps
+    , defaultWith = defaultWith
+    , mkMatrix = mkMatrix
     , CI = CI
     }
