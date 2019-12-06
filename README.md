@@ -16,7 +16,7 @@ in  haskellCi.generalCi
           { ghc = [ haskellCi.GHC.GHC881, haskellCi.GHC.GHC865 ]
           , cabal = [ haskellCi.Cabal.Cabal30 ]
           }
-      )
+      ) : haskellCi.CI.Type
 ```
 
 Then, generate YAML with `dhall-to-yaml --file example.dhall`
