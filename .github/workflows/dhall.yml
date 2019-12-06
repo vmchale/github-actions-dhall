@@ -9,6 +9,7 @@ jobs:
           ghc-version: "8.6.5"
       - name: "Install dhall"
         run: |
+          cabal update
           cabal install dhall
           export PATH=$HOME/.cabal/bin:$PATH
       - name: "Check Dhall"

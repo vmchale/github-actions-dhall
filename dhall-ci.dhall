@@ -8,6 +8,7 @@ let dhallInstall =
         { name = "Install dhall"
         , run =
             ''
+            cabal update
             cabal install dhall
             export PATH=$HOME/.cabal/bin:$PATH
             ''

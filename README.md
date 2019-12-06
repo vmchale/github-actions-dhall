@@ -3,7 +3,11 @@
 This library provides Dhall helper functions to generate YAML for
 github actions.
 
+github-actions-dhall is self-hosting.
+
 ## Example
+
+### Haskell
 
 Store the following in `example.dhall`:
 
