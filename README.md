@@ -21,7 +21,7 @@ in  haskellCi.generalCi
 
 Then, generate YAML with `dhall-to-yaml --file example.dhall`
 
-```
+```yaml
 jobs:
   build:
     runs-on: ubuntu-latest
