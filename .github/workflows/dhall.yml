@@ -8,8 +8,10 @@ jobs:
           cabal-version: "3.0"
           ghc-version: "8.6.5"
       - name: "Install dhall"
-        run: "cabal install dhall"
-      - name: "Check dhall"
+        run: |
+          cabal install dhall
+          export PATH=$HOME/.cabal/bin:$PATH
+      - name: "Check Dhall"
         run: |
           dhall --file haskell-ci.dhall
           dhall --file example.dhall
