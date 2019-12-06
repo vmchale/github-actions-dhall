@@ -69,9 +69,11 @@ let haskellEnv =
         λ(v : VersionInfo)
       → BuildStep.Uses { uses = "actions/setup-haskell@v1", with = Some v }
 
-let defaultEnv = printEnv { ghc-version = GHC.GHC865, cabal-version = Cabal.Cabal30 }
+let defaultEnv =
+      printEnv { ghc-version = GHC.GHC865, cabal-version = Cabal.Cabal30 }
 
-let latestEnv = printEnv { ghc-version = GHC.GHC881, cabal-version = Cabal.Cabal30 }
+let latestEnv =
+      printEnv { ghc-version = GHC.GHC881, cabal-version = Cabal.Cabal30 }
 
 let matrixEnv =
       { ghc-version = "\${{ matrix.ghc }}"
@@ -100,39 +102,31 @@ let cabalTest = BuildStep.Name { name = "Tests", run = "cabal test" }
 
 let cabalDoc = BuildStep.Name { name = "Documentation", run = "cabal haddock" }
 
-let defaultCi =
-        { name = "Haskell CI"
-        , on = [ "push" ]
-        , jobs =
-            { build =
-                { runs-on = "ubuntu-latest"
-                , steps =
-                    [ checkout
-                    , haskellEnv defaultEnv
-                    , cabalDeps
-                    , cabalBuild
-                    , cabalTest
-                    , cabalDoc
-                    ]
-                , strategy = None Matrix
-                }
-            }
-        }
-      : CI
-
-let defaultWith =
+let generalCi =
         λ(sts : List BuildStep)
       → λ(mat : Optional DhallMatrix)
-      →     defaultCi
-          ⫽ { jobs =
-                { build =
-                    { runs-on = defaultCi.jobs.build.runs-on
-                    , steps = sts
-                    , strategy = mapOptional DhallMatrix Matrix mkMatrix mat
-                    }
-                }
-            }
+      →   { name = "Haskell CI"
+          , on = [ "push" ]
+          , jobs =
+              { build =
+                  { runs-on = "ubuntu-latest"
+                  , steps = sts
+                  , strategy = mapOptional DhallMatrix Matrix mkMatrix mat
+                  }
+              }
+          }
         : CI
+
+let stepsEnv =
+        λ(v : VersionInfo)
+      →   [ checkout, haskellEnv v, cabalDeps, cabalBuild, cabalTest, cabalDoc ]
+        : List BuildStep
+
+let matrixSteps = stepsEnv matrixEnv : List BuildStep
+
+let defaultSteps = stepsEnv defaultEnv : List BuildStep
+
+let defaultCi = generalCi defaultSteps (None DhallMatrix) : CI
 
 in  { VersionInfo = VersionInfo
     , BuildStep = BuildStep
@@ -151,10 +145,13 @@ in  { VersionInfo = VersionInfo
     , latestEnv = latestEnv
     , matrixEnv = matrixEnv
     , defaultCi = defaultCi
-    , defaultWith = defaultWith
+    , generalCi = generalCi
     , mkMatrix = mkMatrix
     , printMatrix = printMatrix
     , printEnv = printEnv
     , printGhc = printGhc
     , printCabal = printCabal
+    , stepsEnv = stepsEnv
+    , matrixSteps = matrixSteps
+    , defaultSteps = defaultSteps
     }
