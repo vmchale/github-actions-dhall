@@ -69,9 +69,9 @@ let haskellEnv =
         λ(v : VersionInfo)
       → BuildStep.Uses { uses = "actions/setup-haskell@v1", with = Some v }
 
-let defaultEnv = { ghc-version = "8.6.5", cabal-version = "3.0" }
+let defaultEnv = printEnv { ghc-version = GHC.GHC865, cabal-version = Cabal.Cabal30 }
 
-let latestEnv = { ghc-version = "8.8.1", cabal-version = "3.0" }
+let latestEnv = printEnv { ghc-version = GHC.GHC881, cabal-version = Cabal.Cabal30 }
 
 let matrixEnv =
       { ghc-version = "\${{ matrix.ghc }}"
