@@ -46,8 +46,8 @@ let dhallCi =
       →   haskellCi.generalCi
             [ haskellCi.checkout
             , haskellCi.haskellEnv haskellCi.defaultEnv
-            , dhallInstall
             , dhallCache
+            , dhallInstall
             , checkDhall dhalls
             ]
             (None haskellCi.DhallMatrix)
