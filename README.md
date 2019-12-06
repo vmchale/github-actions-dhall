@@ -53,4 +53,7 @@ on:
   - push
 ```
 
-Now, you can edit the build matrix safely.
+Have a look at
+[libarchive](https://github.com/vmchale/libarchive/blob/master/github-action.dhall)
+and [lzlib](https://github.com/vmchale/lzlib/blob/master/haskell-ci.dhall) for
+more sophisticated examples.
