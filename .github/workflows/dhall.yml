@@ -9,7 +9,7 @@ jobs:
           ghc-version: "8.6.5"
       - uses: "actions/cache@v1"
         with:
-          key: "~/.cabal/${{ hashFiles('**/*.log') }}"
+          key: "${{ runner.os }}-cabal"
           path: "~/.cabal/bin"
       - name: "Install dhall"
         run: |

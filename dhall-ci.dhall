@@ -19,7 +19,7 @@ let dhallCache =
         , with =
             haskellCi.CacheCfg::{
             , path = "~/.cabal/bin"
-            , key = "~/.cabal/\${{ hashFiles('**/*.log') }}"
+            , key = "\${{ runner.os }}-cabal"
             }
         }
 
