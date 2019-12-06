@@ -19,7 +19,7 @@ in  haskellCi.generalCi
       )
 ```
 
-Then, generate YAML with
+Then, generate YAML with `dhall-to-yaml --file example.dhall`
 
 ```
 jobs:
