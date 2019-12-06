@@ -22,15 +22,18 @@ let Matrix = { matrix : { ghc : List Text, cabal : List Text } }
 let DhallMatrix = { ghc : List GHC, cabal : List Cabal }
 
 let CI =
-      { name : Text
-      , on : List Text
-      , jobs :
-          { build :
-              { runs-on : Text
-              , steps : List BuildStep
-              , strategy : Optional Matrix
+      { Type =
+          { name : Text
+          , on : List Text
+          , jobs :
+              { build :
+                  { runs-on : Text
+                  , steps : List BuildStep
+                  , strategy : Optional Matrix
+                  }
               }
           }
+      , default = { name = "Haskell CI", on = [ "push" ] }
       }
 
 let printGhc =
@@ -105,8 +108,7 @@ let cabalDoc = BuildStep.Name { name = "Documentation", run = "cabal haddock" }
 let generalCi =
         λ(sts : List BuildStep)
       → λ(mat : Optional DhallMatrix)
-      →   { name = "Haskell CI"
-          , on = [ "push" ]
+      →   CI::{
           , jobs =
               { build =
                   { runs-on = "ubuntu-latest"
@@ -115,7 +117,7 @@ let generalCi =
                   }
               }
           }
-        : CI
+        : CI.Type
 
 let stepsEnv =
         λ(v : VersionInfo)
@@ -126,7 +128,7 @@ let matrixSteps = stepsEnv matrixEnv : List BuildStep
 
 let defaultSteps = stepsEnv defaultEnv : List BuildStep
 
-let defaultCi = generalCi defaultSteps (None DhallMatrix) : CI
+let defaultCi = generalCi defaultSteps (None DhallMatrix) : CI.Type
 
 in  { VersionInfo = VersionInfo
     , BuildStep = BuildStep
