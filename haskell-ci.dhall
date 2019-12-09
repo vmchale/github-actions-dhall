@@ -4,6 +4,9 @@ let map =
 let mapOptional =
       https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/Optional/map sha256:e7f44219250b89b094fbf9996e04b5daafc0902d864113420072ae60706ac73d
 
+let concatSep =
+      https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/Text/concatSep sha256:e4401d69918c61b92a4c0288f7d60a6560ca99726138ed8ebc58dca2cd205e58
+
 let GHC = < GHC802 | GHC822 | GHC844 | GHC865 | GHC881 >
 
 let Cabal = < Cabal30 | Cabal24 | Cabal22 | Cabal20 >
@@ -91,6 +94,16 @@ let matrixEnv =
 
 let mkMatrix = λ(st : DhallMatrix) → { matrix = printMatrix st }
 
+let hlintDirs =
+        λ(dirs : List Text)
+      → let bashDirs = concatSep " " dirs
+
+        in  BuildStep.Name
+              { name = "Run hlint"
+              , run =
+                  "curl -sSL https://raw.github.com/ndmitchell/hlint/master/misc/run.sh | sh -s ${bashDirs}"
+              }
+
 let cabalDeps =
       BuildStep.Name
         { name = "Install dependencies"
@@ -164,4 +177,5 @@ in  { VersionInfo = VersionInfo
     , stepsEnv = stepsEnv
     , matrixSteps = matrixSteps
     , defaultSteps = defaultSteps
+    , hlintDirs = hlintDirs
     }

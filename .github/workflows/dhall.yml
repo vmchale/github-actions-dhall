@@ -17,6 +17,7 @@ jobs:
           dhall --file haskell-ci.dhall
           dhall --file example.dhall
           dhall --file self-ci.dhall
+          dhall --file ats-ci.dhall
 name: "Haskell CI"
 on:
   - push
