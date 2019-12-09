@@ -32,6 +32,16 @@ let atsBuildTargets =
               ''
           }
 
+let atsCheckPkg =
+      haskellCi.BuildStep.Name
+        { name = "Check pkg.dhall"
+        , run =
+            ''
+            export PATH=$HOME/.local/bin:$PATH
+            atspkg check pkg.dhall
+            ''
+        }
+
 let atsBuild = atsBuildTargets ([] : List Text)
 
 let atsTestTargets =
@@ -63,6 +73,7 @@ in  { atspkgInstall = atspkgInstall
     , atsTest = atsTest
     , atsCi = atsCi
     , atsSteps = atsSteps
+    , atsCheckPkg = atsCheckPkg
     , checkout = haskellCi.checkout
     , CI = haskellCi.CI
     }
