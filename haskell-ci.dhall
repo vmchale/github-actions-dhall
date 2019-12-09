@@ -194,7 +194,7 @@ let generalCi =
       →   CI::{
           , jobs =
               { build =
-                  { runs-on = matrixOS
+                  { runs-on = printOS OS.Ubuntu1804
                   , steps = sts
                   , strategy = mapOptional DhallMatrix.Type Matrix mkMatrix mat
                   }
