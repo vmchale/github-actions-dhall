@@ -1,6 +1,9 @@
 let haskellCi =
       ./haskell-ci.dhall sha256:ff0522efb1b85daaf578203a42e1caad156d6d461b318c1e7b83c3fcf5d144ba
 
+let concatSep =
+      https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/Text/concatSep sha256:e4401d69918c61b92a4c0288f7d60a6560ca99726138ed8ebc58dca2cd205e58
+
 let atspkgInstall =
       haskellCi.BuildStep.Name
         { name = "Install atspkg"
@@ -14,28 +17,36 @@ let mkPkgArgs =
         λ(pkgArgs : Optional Text)
       → Optional/fold Text pkgArgs Text (λ(x : Text) → " --pkg-args ${x}") ""
 
-let atsBuild =
-        λ(pkgArgs : Optional Text)
+let mkTgts = concatSep " "
+
+let atsBuildTargets =
+        λ(targets : List Text)
+      → λ(pkgArgs : Optional Text)
       → haskellCi.BuildStep.Name
           { name = "Build ATS"
           , run =
               ''
               export PATH=$HOME/.local/bin:$PATH
               atspkg -V
-              atspkg build -vv${mkPkgArgs pkgArgs}
+              atspkg build -vv${mkPkgArgs pkgArgs} ${mkTgts targets}
               ''
           }
 
-let atsTest =
-        λ(pkgArgs : Optional Text)
+let atsBuild = atsBuildTargets ([] : List Text)
+
+let atsTestTargets =
+        λ(targets : List Text)
+      → λ(pkgArgs : Optional Text)
       → haskellCi.BuildStep.Name
           { name = "Test ATS"
           , run =
               ''
               export PATH=$HOME/.local/bin:$PATH
-              atspkg test -vv${mkPkgArgs pkgArgs}
+              atspkg test -vv${mkPkgArgs pkgArgs} ${mkTgts targets}
               ''
           }
+
+let atsTest = atsTestTargets ([] : List Text)
 
 let atsSteps =
         λ(steps : List haskellCi.BuildStep)
@@ -48,6 +59,7 @@ let atsCi =
 
 in  { atspkgInstall = atspkgInstall
     , atsBuild = atsBuild
+    , atsBuildTargets = atsBuildTargets
     , atsTest = atsTest
     , atsCi = atsCi
     , atsSteps = atsSteps
