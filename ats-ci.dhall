@@ -1,5 +1,5 @@
 let haskellCi =
-      ./haskell-ci.dhall sha256:bb6b0eee75d9f5d9e62b7a0386efef5c1d0d6fb1415eab5a33500976cc70c886
+      ./haskell-ci.dhall sha256:979469f6068f4bfa5e205f6a6b6faa02ae2bf9159425949075af242ce96e5df4
 
 let concatSep =
       https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/Text/concatSep sha256:e4401d69918c61b92a4c0288f7d60a6560ca99726138ed8ebc58dca2cd205e58
@@ -58,10 +58,7 @@ let atsTestTargets =
 
 let atsTest = atsTestTargets ([] : List Text)
 
-let atsSteps =
-        λ(steps : List haskellCi.BuildStep)
-      →   haskellCi.generalCi steps (None haskellCi.DhallMatrix.Type)
-        : haskellCi.CI.Type
+let atsSteps = haskellCi.ciNoMatrix
 
 let atsCi =
         atsSteps [ haskellCi.checkout, atspkgInstall, atsBuild (None Text) ]

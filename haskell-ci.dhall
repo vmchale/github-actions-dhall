@@ -15,21 +15,12 @@ let OS = < Ubuntu1804 | Ubuntu1604 | MacOS | Windows >
 
 let VersionInfo = { ghc-version : Text, cabal-version : Text }
 
+let PyInfo = { python-version : Text, architecture : Optional Text }
+
 let CacheCfg =
       { Type = { path : Text, key : Text, restoreKeys : Optional Text }
       , default = { restoreKeys = None Text }
       }
-
-let PyArch = < X86 | X64 >
-
-let PyVer = < Py3 | Py2 | PyPy2 | PyPy3 >
-
-let PyInfoDhall =
-      { Type = { python-version : PyVer, architecture : Optional PyArch }
-      , default = { python-version = PyVer.Py3, architecture = None PyArch }
-      }
-
-let PyInfo = { python-version : Text, architecture : Optional Text }
 
 let BuildStep =
       < Uses : { uses : Text, with : Optional VersionInfo }
@@ -83,20 +74,6 @@ let printOS =
           , MacOS = "macos-latest"
           }
           os
-
-let printPyVer =
-        λ(pyVer : PyVer)
-      → merge
-          { Py2 = "2.x", Py3 = "3.x", PyPy2 = "pypy2", PyPy3 = "pypy3" }
-          pyVer
-
-let printPyArch = λ(pyArch : PyArch) → merge { X86 = "x86", X64 = "x64" } pyArch
-
-let printPyInfoDhall =
-        λ(pyInfo : PyInfoDhall.Type)
-      → { python-version = printPyVer pyInfo.python-version
-        , architecture = mapOptional PyArch Text printPyArch pyInfo.architecture
-        }
 
 let printCabal =
         λ(cabal : Cabal)
@@ -182,6 +159,8 @@ let generalCi =
           }
         : CI.Type
 
+let ciNoMatrix = λ(sts : List BuildStep) → generalCi sts (None DhallMatrix.Type)
+
 let stepsEnv =
         λ(v : VersionInfo)
       →   [ checkout, haskellEnv v, cabalDeps, cabalBuild, cabalTest, cabalDoc ]
@@ -209,8 +188,7 @@ in  { VersionInfo = VersionInfo
     , DhallMatrix = DhallMatrix
     , CacheCfg = CacheCfg
     , OS = OS
-    , PyVer = PyVer
-    , PyArch = PyArch
+    , PyInfo = PyInfo
     , cabalDoc = cabalDoc
     , cabalTest = cabalTest
     , cabalDeps = cabalDeps
@@ -234,4 +212,5 @@ in  { VersionInfo = VersionInfo
     , defaultSteps = defaultSteps
     , hlintDirs = hlintDirs
     , hlintAction = hlintAction
+    , ciNoMatrix = ciNoMatrix
     }

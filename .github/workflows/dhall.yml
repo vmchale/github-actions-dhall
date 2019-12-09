@@ -19,6 +19,7 @@ jobs:
           dhall --file self-ci.dhall
           dhall --file ats-ci.dhall
           dhall --file toml-ci.dhall
+          dhall --file self-ci.dhall
 name: "Haskell CI"
 on:
   - push

@@ -7,5 +7,6 @@ in    dhallCi.dhallCi
         , "self-ci.dhall"
         , "ats-ci.dhall"
         , "toml-ci.dhall"
+        , "self-ci.dhall"
         ]
     : dhallCi.CI.Type
