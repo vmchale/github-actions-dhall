@@ -11,20 +11,19 @@ let atspkgInstall =
         }
 
 let atsBuild =
-        λ(dhalls : List Text)
-      → haskellCi.BuildStep.Name
-          { name = "Build ATS"
-          , run =
-              ''
-              export PATH=$HOME/.local/bin:$PATH
-              atspkg -V
-              atspkg build -vv
-              ''
-          }
+      haskellCi.BuildStep.Name
+        { name = "Build ATS"
+        , run =
+            ''
+            export PATH=$HOME/.local/bin:$PATH
+            atspkg -V
+            atspkg build -vv
+            ''
+        }
 
 let atsCi =
         haskellCi.generalCi
-          [ haskellCi.checkout, atspkgInstall ]
+          [ haskellCi.checkout, atspkgInstall, atsBuild ]
           (None haskellCi.DhallMatrix)
       : haskellCi.CI.Type
 
