@@ -147,6 +147,10 @@ let matrixSteps = stepsEnv matrixEnv : List BuildStep
 
 let defaultSteps = stepsEnv defaultEnv : List BuildStep
 
+let hlintAction =
+        λ(dirs : List Text)
+      → generalCi [ checkout, hlintDirs dirs ] (None DhallMatrix) : CI.Type
+
 let defaultCi = generalCi defaultSteps (None DhallMatrix) : CI.Type
 
 in  { VersionInfo = VersionInfo
@@ -178,4 +182,5 @@ in  { VersionInfo = VersionInfo
     , matrixSteps = matrixSteps
     , defaultSteps = defaultSteps
     , hlintDirs = hlintDirs
+    , hlintAction = hlintAction
     }

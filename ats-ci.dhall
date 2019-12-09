@@ -1,5 +1,5 @@
 let haskellCi =
-      ./haskell-ci.dhall sha256:43e43c219449e46c993390815a348d69212e16d53f26e2003fd54857bba53d10
+      ./haskell-ci.dhall sha256:54219f032460ae0c0300a3ae535747e4a9c89b5ffca74ad73a782fc5142f3d86
 
 let concatSep =
       https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/Text/concatSep sha256:e4401d69918c61b92a4c0288f7d60a6560ca99726138ed8ebc58dca2cd205e58
