@@ -13,8 +13,7 @@ let Cabal = < Cabal30 | Cabal24 | Cabal22 | Cabal20 >
 
 let OS = < Ubuntu1804 | Ubuntu1604 | MacOS | Windows >
 
-let VersionInfo =
-      { ghc-version : Text, cabal-version : Text, operating-system : Text }
+let VersionInfo = { ghc-version : Text, cabal-version : Text }
 
 let CacheCfg =
       { Type = { path : Text, key : Text, restoreKeys : Optional Text }
@@ -39,22 +38,14 @@ let BuildStep =
       | UsePy : { uses : Text, with : PyInfo }
       >
 
-let DhallVersion =
-      { ghc-version : GHC, cabal-version : Cabal, operating-system : OS }
+let DhallVersion = { ghc-version : GHC, cabal-version : Cabal }
 
-let Matrix =
-      { matrix :
-          { ghc : List Text, cabal : List Text, operating-system : List Text }
-      }
+let Matrix = { matrix : { ghc : List Text, cabal : List Text } }
 
 let DhallMatrix =
       { Type =
           { ghc : List GHC, cabal : List Cabal, operating-system : List OS }
-      , default =
-          { ghc = [ GHC.GHC865 ]
-          , cabal = [ Cabal.Cabal30 ]
-          , operating-system = [ OS.Ubuntu1804 ]
-          }
+      , default = { ghc = [ GHC.GHC865 ], cabal = [ Cabal.Cabal30 ] }
       }
 
 let CI =
@@ -117,14 +108,12 @@ let printEnv =
         λ(v : DhallVersion)
       → { ghc-version = printGhc v.ghc-version
         , cabal-version = printCabal v.cabal-version
-        , operating-system = printOS v.operating-system
         }
 
 let printMatrix =
         λ(v : DhallMatrix.Type)
       → { ghc = map GHC Text printGhc v.ghc
         , cabal = map Cabal Text printCabal v.cabal
-        , operating-system = map OS Text printOS v.operating-system
         }
 
 let checkout =
@@ -135,25 +124,16 @@ let haskellEnv =
       → BuildStep.Uses { uses = "actions/setup-haskell@v1", with = Some v }
 
 let defaultEnv =
-      printEnv
-        { ghc-version = GHC.GHC865
-        , cabal-version = Cabal.Cabal30
-        , operating-system = OS.Ubuntu1804
-        }
+      printEnv { ghc-version = GHC.GHC865, cabal-version = Cabal.Cabal30 }
 
 let latestEnv =
-      printEnv
-        { ghc-version = GHC.GHC881
-        , cabal-version = Cabal.Cabal30
-        , operating-system = OS.Ubuntu1804
-        }
+      printEnv { ghc-version = GHC.GHC881, cabal-version = Cabal.Cabal30 }
 
 let matrixOS = "\${{ matrix.operating-system }}"
 
 let matrixEnv =
       { ghc-version = "\${{ matrix.ghc }}"
       , cabal-version = "\${{ matrix.cabal }}"
-      , operating-system = matrixOS
       }
 
 let mkMatrix = λ(st : DhallMatrix.Type) → { matrix = printMatrix st } : Matrix

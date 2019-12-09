@@ -7,7 +7,6 @@ jobs:
         with:
           cabal-version: "3.0"
           ghc-version: "8.6.5"
-          operating-system: ubuntu-18.04
       - name: "Install dhall"
         run: |
           cabal update
