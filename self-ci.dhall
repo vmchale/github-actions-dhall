@@ -1,4 +1,4 @@
-let dhallCi = ./dhall-ci.dhall sha256:77be63c6bd5c9978b93e1eb64adca91e5481e7346c96f34a8b58b1992b368ffd
+let dhallCi = ./dhall-ci.dhall sha256:9e13074986753db36ff04f79acf01190def32727e4548ace2391a31b54c3658d
 
 in    dhallCi.dhallCi [ "haskell-ci.dhall", "example.dhall", "self-ci.dhall" ]
     : dhallCi.CI.Type
