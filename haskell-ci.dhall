@@ -11,24 +11,51 @@ let GHC = < GHC802 | GHC822 | GHC844 | GHC865 | GHC881 >
 
 let Cabal = < Cabal30 | Cabal24 | Cabal22 | Cabal20 >
 
-let VersionInfo = { ghc-version : Text, cabal-version : Text }
+let OS = < Ubuntu1804 | Ubuntu1604 | MacOS | Windows >
+
+let VersionInfo =
+      { ghc-version : Text, cabal-version : Text, operating-system : Text }
 
 let CacheCfg =
       { Type = { path : Text, key : Text, restoreKeys : Optional Text }
       , default = { restoreKeys = None Text }
       }
 
+let PyArch = < X86 | X64 >
+
+let PyVer = < Py3 | Py2 | PyPy2 | PyPy3 >
+
+let PyInfoDhall =
+      { Type = { python-version : PyVer, architecture : Optional PyArch }
+      , default = { python-version = PyVer.Py3, architecture = None PyArch }
+      }
+
+let PyInfo = { python-version : Text, architecture : Optional Text }
+
 let BuildStep =
       < Uses : { uses : Text, with : Optional VersionInfo }
       | Name : { name : Text, run : Text }
       | UseCache : { uses : Text, with : CacheCfg.Type }
+      | UsePy : { uses : Text, with : PyInfo }
       >
 
-let DhallVersion = { ghc-version : GHC, cabal-version : Cabal }
+let DhallVersion =
+      { ghc-version : GHC, cabal-version : Cabal, operating-system : OS }
 
-let Matrix = { matrix : { ghc : List Text, cabal : List Text } }
+let Matrix =
+      { matrix :
+          { ghc : List Text, cabal : List Text, operating-system : List Text }
+      }
 
-let DhallMatrix = { ghc : List GHC, cabal : List Cabal }
+let DhallMatrix =
+      { Type =
+          { ghc : List GHC, cabal : List Cabal, operating-system : List OS }
+      , default =
+          { ghc = [ GHC.GHC865 ]
+          , cabal = [ Cabal.Cabal30 ]
+          , operating-system = [ OS.Ubuntu1804 ]
+          }
+      }
 
 let CI =
       { Type =
@@ -56,6 +83,30 @@ let printGhc =
           }
           ghc
 
+let printOS =
+        λ(os : OS)
+      → merge
+          { Windows = "windows-latest"
+          , Ubuntu1804 = "ubuntu-18.04"
+          , Ubuntu1604 = "ubuntu-16.04"
+          , MacOS = "macos-latest"
+          }
+          os
+
+let printPyVer =
+        λ(pyVer : PyVer)
+      → merge
+          { Py2 = "2.x", Py3 = "3.x", PyPy2 = "pypy2", PyPy3 = "pypy3" }
+          pyVer
+
+let printPyArch = λ(pyArch : PyArch) → merge { X86 = "x86", X64 = "x64" } pyArch
+
+let printPyInfoDhall =
+        λ(pyInfo : PyInfoDhall.Type)
+      → { python-version = printPyVer pyInfo.python-version
+        , architecture = mapOptional PyArch Text printPyArch pyInfo.architecture
+        }
+
 let printCabal =
         λ(cabal : Cabal)
       → merge
@@ -66,12 +117,14 @@ let printEnv =
         λ(v : DhallVersion)
       → { ghc-version = printGhc v.ghc-version
         , cabal-version = printCabal v.cabal-version
+        , operating-system = printOS v.operating-system
         }
 
 let printMatrix =
-        λ(v : DhallMatrix)
+        λ(v : DhallMatrix.Type)
       → { ghc = map GHC Text printGhc v.ghc
         , cabal = map Cabal Text printCabal v.cabal
+        , operating-system = map OS Text printOS v.operating-system
         }
 
 let checkout =
@@ -82,17 +135,28 @@ let haskellEnv =
       → BuildStep.Uses { uses = "actions/setup-haskell@v1", with = Some v }
 
 let defaultEnv =
-      printEnv { ghc-version = GHC.GHC865, cabal-version = Cabal.Cabal30 }
+      printEnv
+        { ghc-version = GHC.GHC865
+        , cabal-version = Cabal.Cabal30
+        , operating-system = OS.Ubuntu1804
+        }
 
 let latestEnv =
-      printEnv { ghc-version = GHC.GHC881, cabal-version = Cabal.Cabal30 }
+      printEnv
+        { ghc-version = GHC.GHC881
+        , cabal-version = Cabal.Cabal30
+        , operating-system = OS.Ubuntu1804
+        }
+
+let matrixOS = "\${{ matrix.operating-system }}"
 
 let matrixEnv =
       { ghc-version = "\${{ matrix.ghc }}"
       , cabal-version = "\${{ matrix.cabal }}"
+      , operating-system = matrixOS
       }
 
-let mkMatrix = λ(st : DhallMatrix) → { matrix = printMatrix st }
+let mkMatrix = λ(st : DhallMatrix.Type) → { matrix = printMatrix st } : Matrix
 
 let hlintDirs =
         λ(dirs : List Text)
@@ -126,13 +190,13 @@ let cabalDoc = BuildStep.Name { name = "Documentation", run = "cabal haddock" }
 
 let generalCi =
         λ(sts : List BuildStep)
-      → λ(mat : Optional DhallMatrix)
+      → λ(mat : Optional DhallMatrix.Type)
       →   CI::{
           , jobs =
               { build =
-                  { runs-on = "ubuntu-latest"
+                  { runs-on = matrixOS
                   , steps = sts
-                  , strategy = mapOptional DhallMatrix Matrix mkMatrix mat
+                  , strategy = mapOptional DhallMatrix.Type Matrix mkMatrix mat
                   }
               }
           }
@@ -149,11 +213,11 @@ let defaultSteps = stepsEnv defaultEnv : List BuildStep
 
 let hlintAction =
         λ(dirs : List Text)
-      →     generalCi [ checkout, hlintDirs dirs ] (None DhallMatrix)
+      →     generalCi [ checkout, hlintDirs dirs ] (None DhallMatrix.Type)
           ⫽ { name = "HLint checks" }
         : CI.Type
 
-let defaultCi = generalCi defaultSteps (None DhallMatrix) : CI.Type
+let defaultCi = generalCi defaultSteps (None DhallMatrix.Type) : CI.Type
 
 in  { VersionInfo = VersionInfo
     , BuildStep = BuildStep
@@ -164,6 +228,9 @@ in  { VersionInfo = VersionInfo
     , DhallVersion = DhallVersion
     , DhallMatrix = DhallMatrix
     , CacheCfg = CacheCfg
+    , OS = OS
+    , PyVer = PyVer
+    , PyArch = PyArch
     , cabalDoc = cabalDoc
     , cabalTest = cabalTest
     , cabalDeps = cabalDeps
@@ -180,7 +247,9 @@ in  { VersionInfo = VersionInfo
     , printEnv = printEnv
     , printGhc = printGhc
     , printCabal = printCabal
+    , printOS = printOS
     , stepsEnv = stepsEnv
+    , matrixOS = matrixOS
     , matrixSteps = matrixSteps
     , defaultSteps = defaultSteps
     , hlintDirs = hlintDirs

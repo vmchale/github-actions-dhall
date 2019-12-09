@@ -1,5 +1,5 @@
 let dhallCi =
-      ./dhall-ci.dhall sha256:b8c4129e6c75258d4dd3319a7c536b769d00a3e7bacb73c67555145f43ccc351
+      ./dhall-ci.dhall sha256:29a496666d5510f69e614d86f44ffb6564d5d0fa5531eb534bf820d64bbbc34f
 
 in    dhallCi.dhallCi
         [ "haskell-ci.dhall"
