@@ -10,25 +10,47 @@ let atspkgInstall =
             ''
         }
 
+let mkPkgArgs =
+        λ(pkgArgs : Optional Text)
+      → Optional/fold Text pkgArgs Text (λ(x : Text) → " --pkg-args ${x}") ""
+
 let atsBuild =
-      haskellCi.BuildStep.Name
-        { name = "Build ATS"
-        , run =
-            ''
-            export PATH=$HOME/.local/bin:$PATH
-            atspkg -V
-            atspkg build -vv
-            ''
-        }
+        λ(pkgArgs : Optional Text)
+      → haskellCi.BuildStep.Name
+          { name = "Build ATS"
+          , run =
+              ''
+              export PATH=$HOME/.local/bin:$PATH
+              atspkg -V
+              atspkg build -vv${mkPkgArgs pkgArgs}
+              ''
+          }
+
+let atsTest =
+        λ(pkgArgs : Optional Text)
+      → haskellCi.BuildStep.Name
+          { name = "Test ATS"
+          , run =
+              ''
+              export PATH=$HOME/.local/bin:$PATH
+              atspkg test -vv${mkPkgArgs pkgArgs}
+              ''
+          }
+
+let atsSteps =
+        λ(steps : List haskellCi.BuildStep)
+      →   haskellCi.generalCi steps (None haskellCi.DhallMatrix)
+        : haskellCi.CI.Type
 
 let atsCi =
-        haskellCi.generalCi
-          [ haskellCi.checkout, atspkgInstall, atsBuild ]
-          (None haskellCi.DhallMatrix)
+        atsSteps [ haskellCi.checkout, atspkgInstall, atsBuild (None Text) ]
       : haskellCi.CI.Type
 
 in  { atspkgInstall = atspkgInstall
     , atsBuild = atsBuild
+    , atsTest = atsTest
     , atsCi = atsCi
+    , atsSteps = atsSteps
+    , checkout = haskellCi.checkout
     , CI = haskellCi.CI
     }
