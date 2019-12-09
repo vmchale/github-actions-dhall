@@ -8,5 +8,7 @@ in    dhallCi.dhallCi
         , "ats-ci.dhall"
         , "toml-ci.dhall"
         , "self-ci.dhall"
+        , "python-ci.dhall"
+        , "yaml-ci.dhall"
         ]
     : dhallCi.CI.Type
