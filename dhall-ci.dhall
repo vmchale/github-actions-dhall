@@ -56,5 +56,5 @@ in  { dhallInstall = dhallInstall
     , dhallYamlInstall = dhallYamlInstall
     , dhallCi = dhallCi
     , checkDhall = checkDhall
-    , CI = haskellCi.CI
+    , CI = haskellCi.CI.Type
     }

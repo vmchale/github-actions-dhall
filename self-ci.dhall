@@ -1,5 +1,5 @@
 let dhallCi =
-      ./dhall-ci.dhall sha256:c5b9fca54c2375479bbf40905a6100f01c4061211eb115f14ca0f62cddd12543
+      ./dhall-ci.dhall sha256:b98935ce728983458769efb00679ef80f732b1b64154e1ae8cc841c82f8a0d88
 
 in    dhallCi.dhallCi
         [ "haskell-ci.dhall"
@@ -11,4 +11,4 @@ in    dhallCi.dhallCi
         , "python-ci.dhall"
         , "yaml-ci.dhall"
         ]
-    : dhallCi.CI.Type
+    : dhallCi.CI
