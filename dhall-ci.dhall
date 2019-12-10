@@ -60,28 +60,21 @@ let checkDhallYaml =
                     dhalls
           }
 
-let dhallCi =
-        λ(dhalls : List Text)
+let dhallSteps =
+        λ(steps : List haskellCi.BuildStep)
       →     haskellCi.ciNoMatrix
-              [ haskellCi.checkout
-              , haskellCi.haskellEnv haskellCi.defaultEnv
-              , dhallInstall
-              , checkDhall dhalls
-              ]
+              (   [ haskellCi.checkout
+                  , haskellCi.haskellEnv haskellCi.defaultEnv
+                  , dhallInstall
+                  ]
+                # steps
+              )
           ⫽ { name = "Dhall CI" }
         : haskellCi.CI.Type
 
-let dhallSteps =
-        λ(steps : List haskellCi.BuildStep)
-      →   haskellCi.ciNoMatrix
-            (   [ haskellCi.checkout
-                , haskellCi.haskellEnv haskellCi.defaultEnv
-                , dhallInstall
-                ]
-              # steps
-            )
-          ⫽ { name = "Dhall CI" }
-        : haskellCi.CI.Type
+let dhallCi =
+        λ(dhalls : List Text)
+      → dhallSteps [ checkDhall dhalls ] : haskellCi.CI.Type
 
 in  { dhallInstall = dhallInstall
     , dhallYamlInstall = dhallYamlInstall
