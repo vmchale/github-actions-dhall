@@ -29,6 +29,6 @@ jobs:
           export PATH=$HOME/.cabal/bin:$PATH
           dhall-to-yaml --file self-ci.dhall
           dhall-to-yaml --file example.dhall
-name: "Haskell CI"
+name: "Dhall CI"
 on:
   - push
