@@ -11,6 +11,10 @@ jobs:
         run: |
           cabal update
           cabal install dhall
+      - name: "Install dhall-to-yaml &c."
+        run: |
+          cabal update
+          cabal install dhall-json
       - name: "Check Dhall"
         run: |
           export PATH=$HOME/.cabal/bin:$PATH
