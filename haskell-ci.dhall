@@ -35,7 +35,7 @@ let Matrix = { matrix : { ghc : List Text, cabal : List Text } }
 
 let DhallMatrix =
       { Type =
-          { ghc : List GHC, cabal : List Cabal, operating-system : List OS }
+          { ghc : List GHC, cabal : List Cabal }
       , default = { ghc = [ GHC.GHC865 ], cabal = [ Cabal.Cabal30 ] }
       }
 
