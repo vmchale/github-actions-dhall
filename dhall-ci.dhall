@@ -16,7 +16,7 @@ let dhallInstall =
 
 let dhallYamlInstall =
       haskellCi.BuildStep.Name
-        { name = "Install dhall"
+        { name = "Install dhall-to-yaml &c."
         , run =
             ''
             cabal update
@@ -42,6 +42,24 @@ let checkDhall =
                     dhalls
           }
 
+let checkDhallYaml =
+        λ(dhalls : List Text)
+      → haskellCi.BuildStep.Name
+          { name = "Check Dhall can be converted to YAML"
+          , run =
+                  ''
+                  export PATH=$HOME/.cabal/bin:$PATH
+                  ''
+              ++  concatMap
+                    Text
+                    (   λ(d : Text)
+                      → ''
+                        dhall-to-yaml --file ${d}
+                        ''
+                    )
+                    dhalls
+          }
+
 let dhallCi =
         λ(dhalls : List Text)
       →   haskellCi.ciNoMatrix
@@ -52,9 +70,21 @@ let dhallCi =
             ]
         : haskellCi.CI.Type
 
+let dhallSteps =
+        λ(steps : List haskellCi.BuildStep)
+      →   haskellCi.ciNoMatrix
+            ([ haskellCi.checkout
+            , haskellCi.haskellEnv haskellCi.defaultEnv
+            , dhallInstall
+            ] # steps)
+        : haskellCi.CI.Type
+
 in  { dhallInstall = dhallInstall
     , dhallYamlInstall = dhallYamlInstall
     , dhallCi = dhallCi
     , checkDhall = checkDhall
+    , checkDhallYaml = checkDhallYaml
+    , dhallSteps = dhallSteps
     , CI = haskellCi.CI.Type
+    , BuildStep = haskellCi.BuildStep
     }

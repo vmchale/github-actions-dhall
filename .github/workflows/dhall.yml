@@ -15,13 +15,16 @@ jobs:
         run: |
           export PATH=$HOME/.cabal/bin:$PATH
           dhall --file haskell-ci.dhall
-          dhall --file example.dhall
-          dhall --file self-ci.dhall
           dhall --file ats-ci.dhall
           dhall --file toml-ci.dhall
           dhall --file self-ci.dhall
           dhall --file python-ci.dhall
           dhall --file yaml-ci.dhall
+      - name: "Check Dhall can be converted to YAML"
+        run: |
+          export PATH=$HOME/.cabal/bin:$PATH
+          dhall-to-yaml --file self-ci.dhall
+          dhall-to-yaml --file example.dhall
 name: "Haskell CI"
 on:
   - push

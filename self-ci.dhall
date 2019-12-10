@@ -1,14 +1,15 @@
 let dhallCi =
-      ./dhall-ci.dhall sha256:b98935ce728983458769efb00679ef80f732b1b64154e1ae8cc841c82f8a0d88
+      ./dhall-ci.dhall sha256:8923d42348505bcd1ffe646807ef442fd0c39fad9060df830bf41d25b7918145
 
-in    dhallCi.dhallCi
-        [ "haskell-ci.dhall"
-        , "example.dhall"
-        , "self-ci.dhall"
-        , "ats-ci.dhall"
-        , "toml-ci.dhall"
-        , "self-ci.dhall"
-        , "python-ci.dhall"
-        , "yaml-ci.dhall"
+in    dhallCi.dhallSteps
+        [ dhallCi.checkDhall
+            [ "haskell-ci.dhall"
+            , "ats-ci.dhall"
+            , "toml-ci.dhall"
+            , "self-ci.dhall"
+            , "python-ci.dhall"
+            , "yaml-ci.dhall"
+            ]
+        , dhallCi.checkDhallYaml [ "self-ci.dhall", "example.dhall" ]
         ]
     : dhallCi.CI
