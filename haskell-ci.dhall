@@ -34,8 +34,7 @@ let DhallVersion = { ghc-version : GHC, cabal-version : Cabal }
 let Matrix = { matrix : { ghc : List Text, cabal : List Text } }
 
 let DhallMatrix =
-      { Type =
-          { ghc : List GHC, cabal : List Cabal }
+      { Type = { ghc : List GHC, cabal : List Cabal }
       , default = { ghc = [ GHC.GHC865 ], cabal = [ Cabal.Cabal30 ] }
       }
 
