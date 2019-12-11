@@ -1,1 +1,1 @@
-.github/workflows/dhall.yaml linguist-vendored
+.github/workflows/*.yaml linguist-vendored

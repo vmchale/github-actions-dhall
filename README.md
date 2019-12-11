@@ -1,6 +1,6 @@
 # github-actions-dhall
 
-This library provides Dhall helper functions to generate YAML for
+This is a demonstration using Dhall to generate YAML for
 github actions.
 
 github-actions-dhall is
@@ -59,6 +59,6 @@ on:
   - push
 ```
 
-[libarchive](https://github.com/vmchale/libarchive/blob/master/github-action.dhall)
-and [lzlib](https://github.com/vmchale/lzlib/blob/master/haskell-ci.dhall) have
-more sophisticated examples.
+Have a look at
+[hlint-lib](https://github.com/vmchale/hlint-lib/blob/master/self-ci.dhall) for
+a more "organic" example.
