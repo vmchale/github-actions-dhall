@@ -10,6 +10,7 @@ in    dhallCi.dhallSteps
             , "self-ci.dhall"
             , "python-ci.dhall"
             , "yaml-ci.dhall"
+            , "egison-ci.dhall"
             ]
         , dhallCi.checkDhallYaml [ "self-ci.dhall", "example.dhall" ]
         ]
