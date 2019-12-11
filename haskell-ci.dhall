@@ -38,6 +38,14 @@ let DhallMatrix =
       , default = { ghc = [ GHC.GHC865 ], cabal = [ Cabal.Cabal30 ] }
       }
 
+let Event = < Push | Release | PullRequest >
+
+let printEvent =
+        λ(event : Event)
+      → merge
+          { Push = "push", Release = "release", PullRequest = "pull_request" }
+          event
+
 let CI =
       { Type =
           { name : Text
@@ -50,7 +58,7 @@ let CI =
                   }
               }
           }
-      , default = { name = "Haskell CI", on = [ "push" ] }
+      , default = { name = "Haskell CI", on = [ printEvent Event.Push ] }
       }
 
 let printGhc =
@@ -188,6 +196,7 @@ in  { VersionInfo = VersionInfo
     , CacheCfg = CacheCfg
     , OS = OS
     , PyInfo = PyInfo
+    , Event = Event
     , cabalDoc = cabalDoc
     , cabalTest = cabalTest
     , cabalDeps = cabalDeps
@@ -205,6 +214,7 @@ in  { VersionInfo = VersionInfo
     , printGhc = printGhc
     , printCabal = printCabal
     , printOS = printOS
+    , printEvent = printEvent
     , stepsEnv = stepsEnv
     , matrixOS = matrixOS
     , matrixSteps = matrixSteps
