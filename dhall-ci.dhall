@@ -82,6 +82,8 @@ in  { dhallInstall = dhallInstall
     , checkDhall = checkDhall
     , checkDhallYaml = checkDhallYaml
     , dhallSteps = dhallSteps
+    , printEvent = haskellCi.printEvent
     , CI = haskellCi.CI.Type
     , BuildStep = haskellCi.BuildStep
+    , Event = haskellCi.Event
     }

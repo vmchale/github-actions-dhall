@@ -73,4 +73,6 @@ in  { atspkgInstall = atspkgInstall
     , atsCheckPkg = atsCheckPkg
     , checkout = haskellCi.checkout
     , CI = haskellCi.CI
+    , BuildStep = haskellCi.BuildStep
+    , Event = haskellCi.Event
     }

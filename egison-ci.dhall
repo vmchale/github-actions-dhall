@@ -52,4 +52,5 @@ in  { egiInstall = egiInstall
     , egiSteps = egiSteps
     , CI = haskellCi.CI.Type
     , BuildStep = haskellCi.BuildStep
+    , Event = haskellCi.Event
     }

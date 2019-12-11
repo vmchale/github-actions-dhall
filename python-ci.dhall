@@ -42,6 +42,7 @@ in  { PyInfo = haskellCi.PyInfo
     , PyVer = PyVer
     , BuildStep = haskellCi.BuildStep
     , CI = haskellCi.CI
+    , Event = haskellCi.Event
     , printPyInfoDhall = printPyInfoDhall
     , printPyArch = printPyArch
     , printPyVer = printPyVer
