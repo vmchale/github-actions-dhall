@@ -10,6 +10,7 @@ let dhallInstall =
         , run =
             ''
             cabal update
+            cd "$(mktemp -d /tmp/dhall-XXX)"
             cabal install dhall
             ''
         }
@@ -20,6 +21,7 @@ let dhallYamlInstall =
         , run =
             ''
             cabal update
+            cd "$(mktemp -d /tmp/dhall-XXX)"
             cabal install dhall-json
             ''
         }

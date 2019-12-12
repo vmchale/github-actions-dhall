@@ -10,10 +10,12 @@ jobs:
       - name: "Install dhall"
         run: |
           cabal update
+          cd "$(mktemp -d /tmp/dhall-XXX)"
           cabal install dhall
       - name: "Install dhall-to-yaml &c."
         run: |
           cabal update
+          cd "$(mktemp -d /tmp/dhall-XXX)"
           cabal install dhall-json
       - name: "Check Dhall"
         run: |
