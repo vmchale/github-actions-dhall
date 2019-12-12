@@ -142,15 +142,25 @@ let cabalDeps =
             ''
         }
 
-let cabalBuild =
-      BuildStep.Name
-        { name = "Build"
-        , run = "cabal build --enable-tests --enable-benchmarks"
-        }
+let cabalWithFlags =
+        λ(subcommand : Text)
+      → λ(flags : List Text)
+      → let flagStr = concatSep " " flags
 
-let cabalTest = BuildStep.Name { name = "Tests", run = "cabal test" }
+        in  BuildStep.Name
+              { name = subcommand, run = "cabal ${subcommand} ${flagStr}" }
 
-let cabalDoc = BuildStep.Name { name = "Documentation", run = "cabal haddock" }
+let cabalBuildWithFlags = cabalWithFlags "build"
+
+let cabalBuild = cabalBuildWithFlags [ "--enable-tests", "--enable-benchmarks" ]
+
+let cabalTest = cabalWithFlags "test" ([] : List Text)
+
+let cabalTestProfiling = cabalWithFlags "test" [ "--enable-profiling" ]
+
+let cabalTestCoverage = cabalWithFlags "test" [ "--enable-coverage" ]
+
+let cabalDoc = cabalWithFlags "haddock" ([] : List Text)
 
 let generalCi =
         λ(sts : List BuildStep)
@@ -201,6 +211,10 @@ in  { VersionInfo = VersionInfo
     , cabalTest = cabalTest
     , cabalDeps = cabalDeps
     , cabalBuild = cabalBuild
+    , cabalWithFlags = cabalWithFlags
+    , cabalBuildWithFlags = cabalBuildWithFlags
+    , cabalTestProfiling = cabalTestProfiling
+    , cabalTestCoverage = cabalTestCoverage
     , checkout = checkout
     , haskellEnv = haskellEnv
     , defaultEnv = defaultEnv
