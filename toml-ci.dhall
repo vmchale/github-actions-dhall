@@ -6,7 +6,7 @@ let concatSep =
 
 let checkToml =
         λ(tomlFiles : List Text)
-      → let bashDirs = concatSep " " tomlFiles
+      → let bashDirs = concatSep " --file " tomlFiles
 
         in  haskellCi.BuildStep.Name
               { name = "Check TOML"
