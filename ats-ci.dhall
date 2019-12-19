@@ -58,7 +58,9 @@ let atsTestTargets =
 
 let atsTest = atsTestTargets ([] : List Text)
 
-let atsSteps = haskellCi.ciNoMatrix
+let atsSteps =
+        λ(steps : List haskellCi.BuildStep)
+      → haskellCi.ciNoMatrix steps ⫽ { name = "ATS CI" }
 
 let atsCi =
         atsSteps [ haskellCi.checkout, atspkgInstall, atsBuild (None Text) ]
