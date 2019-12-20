@@ -42,7 +42,7 @@ let Event =
       < push
       | release
       | pull_request
-      | Schedule : { schedule : { cron : Text } }
+      | Schedule : { schedule : List { cron : Text } }
       >
 
 let CI =

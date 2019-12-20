@@ -1,5 +1,5 @@
 let pyCi =
-      ./python-ci.dhall sha256:f4898041ecf9cc8fc7861c1201a9d1e902edb1b175b813c16f747b264c85a366
+      ./python-ci.dhall sha256:46aa0bee864c092e472b7280b58765495824e378aa584dc47fcd5ec8cdcfdfd8
 
 let concatSep =
       https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/Text/concatSep sha256:e4401d69918c61b92a4c0288f7d60a6560ca99726138ed8ebc58dca2cd205e58
