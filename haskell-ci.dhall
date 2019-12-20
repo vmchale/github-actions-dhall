@@ -38,18 +38,12 @@ let DhallMatrix =
       , default = { ghc = [ GHC.GHC865 ], cabal = [ Cabal.Cabal30 ] }
       }
 
-let Event = < Push | Release | PullRequest >
-
-let printEvent =
-        λ(event : Event)
-      → merge
-          { Push = "push", Release = "release", PullRequest = "pull_request" }
-          event
+let Event = < push | release | pull_request | schedule : { cron : Text } >
 
 let CI =
       { Type =
           { name : Text
-          , on : List Text
+          , on : List Event
           , jobs :
               { build :
                   { runs-on : Text
@@ -58,7 +52,7 @@ let CI =
                   }
               }
           }
-      , default = { name = "Haskell CI", on = [ printEvent Event.Push ] }
+      , default = { name = "Haskell CI", on = [ Event.push ] }
       }
 
 let printGhc =
@@ -228,7 +222,6 @@ in  { VersionInfo = VersionInfo
     , printGhc = printGhc
     , printCabal = printCabal
     , printOS = printOS
-    , printEvent = printEvent
     , stepsEnv = stepsEnv
     , matrixOS = matrixOS
     , matrixSteps = matrixSteps

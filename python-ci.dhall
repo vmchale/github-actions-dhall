@@ -1,5 +1,5 @@
 let haskellCi =
-      ./haskell-ci.dhall sha256:e48dbc8852b9a41fe15486b9963dd30940675219054939c7bb7a296030814b18
+      ./haskell-ci.dhall sha256:32bae084b52a84d8f5d52727b09717baf4b353a2cbf56c3c66d523ca905b237a
 
 let mapOptional =
       https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/Optional/map sha256:e7f44219250b89b094fbf9996e04b5daafc0902d864113420072ae60706ac73d
