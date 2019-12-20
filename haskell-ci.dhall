@@ -38,7 +38,7 @@ let DhallMatrix =
       , default = { ghc = [ GHC.GHC865 ], cabal = [ Cabal.Cabal30 ] }
       }
 
-let Event = < push | release | pull_request | schedule : { cron : Text } >
+let Event = < push | release | pull_request | Schedule : { schedule : { cron : Text } } >
 
 let CI =
       { Type =

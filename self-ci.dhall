@@ -1,5 +1,5 @@
 let dhallCi =
-      ./dhall-ci.dhall sha256:6ab09069c0b558cee86b55e8243f35e648e76288e93a716c4b634275c230c4c4
+      ./dhall-ci.dhall sha256:71ec2d1e0e3531ee2a5696120c84c46379e202c05528b7aef2d73a5ecf13c601
 
 in      dhallCi.dhallSteps
           [ dhallCi.dhallYamlInstall
