@@ -27,6 +27,7 @@ jobs:
           dhall --file python-ci.dhall
           dhall --file yaml-ci.dhall
           dhall --file egison-ci.dhall
+          dhall --file futhark-ci.dhall
       - name: "Check Dhall can be converted to YAML"
         run: |
           export PATH=$HOME/.cabal/bin:$PATH
