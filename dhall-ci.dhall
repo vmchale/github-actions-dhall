@@ -66,7 +66,7 @@ let dhallSteps =
         λ(steps : List haskellCi.BuildStep)
       →     haskellCi.ciNoMatrix
               (   [ haskellCi.checkout
-                  , haskellCi.haskellEnv haskellCi.defaultEnv
+                  , haskellCi.haskellEnv haskellCi.latestEnv
                   , dhallInstall
                   ]
                 # steps
