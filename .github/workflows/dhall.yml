@@ -6,7 +6,7 @@ jobs:
       - uses: "actions/setup-haskell@v1"
         with:
           cabal-version: "3.0"
-          ghc-version: "8.6.5"
+          ghc-version: "8.8.1"
       - name: "Install dhall"
         run: |
           cabal update
@@ -27,6 +27,7 @@ jobs:
           dhall --file python-ci.dhall
           dhall --file yaml-ci.dhall
           dhall --file egison-ci.dhall
+          dhall --file futhark-ci.dhall
       - name: "Check Dhall can be converted to YAML"
         run: |
           export PATH=$HOME/.cabal/bin:$PATH
