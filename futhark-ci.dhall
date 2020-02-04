@@ -15,6 +15,15 @@ let futharkInstall =
             ''
         }
 
+let futharkPkgDeps =
+      haskellCi.BuildStep.Name
+        { name = "Install Futhark package dependencies"
+        , run =
+            ''
+            futhark pkg sync
+            ''
+        }
+
 let checkFuthark =
         λ(futs : List Text)
       → haskellCi.BuildStep.Name
@@ -52,4 +61,5 @@ in  { CI = haskellCi.CI.Type
     , futharkSteps = futharkSteps
     , checkFuthark = checkFuthark
     , futharkCi = futharkCi
+    , futharkPkgDeps = futharkPkgDeps
     }
