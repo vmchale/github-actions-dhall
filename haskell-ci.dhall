@@ -19,7 +19,7 @@ let PyInfo = { python-version : Text, architecture : Optional Text }
 
 let CacheCfg =
       { Type = { path : Text, key : Text, restoreKeys : Optional Text }
-      , default = { restoreKeys = None Text }
+      , default.restoreKeys = None Text
       }
 
 let BuildStep =
@@ -160,12 +160,10 @@ let generalCi =
         λ(sts : List BuildStep)
       → λ(mat : Optional DhallMatrix.Type)
       →   CI::{
-          , jobs =
-              { build =
-                  { runs-on = printOS OS.Ubuntu1804
-                  , steps = sts
-                  , strategy = mapOptional DhallMatrix.Type Matrix mkMatrix mat
-                  }
+          , jobs.build =
+              { runs-on = printOS OS.Ubuntu1804
+              , steps = sts
+              , strategy = mapOptional DhallMatrix.Type Matrix mkMatrix mat
               }
           }
         : CI.Type
