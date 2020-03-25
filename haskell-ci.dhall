@@ -7,7 +7,7 @@ let mapOptional =
 let concatSep =
       https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/Text/concatSep sha256:e4401d69918c61b92a4c0288f7d60a6560ca99726138ed8ebc58dca2cd205e58
 
-let GHC = < GHC802 | GHC822 | GHC844 | GHC865 | GHC881 >
+let GHC = < GHC802 | GHC822 | GHC844 | GHC865 | GHC883 >
 
 let Cabal = < Cabal30 | Cabal24 | Cabal22 | Cabal20 >
 
@@ -19,7 +19,7 @@ let PyInfo = { python-version : Text, architecture : Optional Text }
 
 let CacheCfg =
       { Type = { path : Text, key : Text, restoreKeys : Optional Text }
-      , default = { restoreKeys = None Text }
+      , default.restoreKeys = None Text
       }
 
 let BuildStep =
@@ -62,7 +62,7 @@ let printGhc =
           , GHC822 = "8.2.2"
           , GHC844 = "8.4.4"
           , GHC865 = "8.6.5"
-          , GHC881 = "8.8.1"
+          , GHC883 = "8.8.3"
           }
           ghc
 
@@ -102,10 +102,10 @@ let haskellEnv =
       → BuildStep.Uses { uses = "actions/setup-haskell@v1", with = Some v }
 
 let defaultEnv =
-      printEnv { ghc-version = GHC.GHC865, cabal-version = Cabal.Cabal30 }
+      printEnv { ghc-version = GHC.GHC883, cabal-version = Cabal.Cabal30 }
 
 let latestEnv =
-      printEnv { ghc-version = GHC.GHC881, cabal-version = Cabal.Cabal30 }
+      printEnv { ghc-version = GHC.GHC883, cabal-version = Cabal.Cabal30 }
 
 let matrixOS = "\${{ matrix.operating-system }}"
 
@@ -160,12 +160,10 @@ let generalCi =
         λ(sts : List BuildStep)
       → λ(mat : Optional DhallMatrix.Type)
       →   CI::{
-          , jobs =
-              { build =
-                  { runs-on = printOS OS.Ubuntu1804
-                  , steps = sts
-                  , strategy = mapOptional DhallMatrix.Type Matrix mkMatrix mat
-                  }
+          , jobs.build =
+              { runs-on = printOS OS.Ubuntu1804
+              , steps = sts
+              , strategy = mapOptional DhallMatrix.Type Matrix mkMatrix mat
               }
           }
         : CI.Type
