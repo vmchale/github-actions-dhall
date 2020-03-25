@@ -18,7 +18,7 @@ let haskellCi = https://raw.githubusercontent.com/vmchale/github-actions-dhall/m
 in    haskellCi.generalCi
         haskellCi.matrixSteps
         ( Some
-            { ghc = [ haskellCi.GHC.GHC881, haskellCi.GHC.GHC865 ]
+            { ghc = [ haskellCi.GHC.GHC883, haskellCi.GHC.GHC865 ]
             , cabal = [ haskellCi.Cabal.Cabal30 ]
             }
         )
@@ -52,7 +52,7 @@ jobs:
         cabal:
           - "3.0"
         ghc:
-          - "8.8.1"
+          - "8.8.3"
           - "8.6.5"
 name: "Haskell CI"
 on:
