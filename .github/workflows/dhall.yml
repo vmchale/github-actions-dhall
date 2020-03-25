@@ -6,7 +6,7 @@ jobs:
       - uses: "actions/setup-haskell@v1"
         with:
           cabal-version: '3.0'
-          ghc-version: '8.8.1'
+          ghc-version: '8.8.3'
       - name: Install dhall
         run: |
           cabal update
