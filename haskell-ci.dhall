@@ -23,7 +23,7 @@ let CacheCfg =
       }
 
 let BuildStep =
-      < Uses : { uses : Text, with : Optional VersionInfo }
+      < Uses : { uses : Text, id : Optional Text, with : Optional VersionInfo }
       | Name : { name : Text, run : Text }
       | UseCache : { uses : Text, with : CacheCfg.Type }
       | UsePy : { uses : Text, with : PyInfo }
@@ -105,11 +105,19 @@ let cache =
         }
 
 let checkout =
-      BuildStep.Uses { uses = "actions/checkout@v1", with = None VersionInfo }
+      BuildStep.Uses
+        { uses = "actions/checkout@v1"
+        , id = None Text
+        , with = None VersionInfo
+        }
 
 let haskellEnv =
         λ(v : VersionInfo)
-      → BuildStep.Uses { uses = "actions/setup-haskell@v1", with = Some v }
+      → BuildStep.Uses
+          { uses = "actions/setup-haskell@v1"
+          , id = Some "setup-haskell-cabal"
+          , with = Some v
+          }
 
 let defaultEnv =
       printEnv { ghc-version = GHC.GHC883, cabal-version = Cabal.Cabal30 }
