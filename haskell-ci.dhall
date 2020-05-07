@@ -94,6 +94,16 @@ let printMatrix =
         , cabal = map Cabal Text printCabal v.cabal
         }
 
+let cache =
+      BuildStep.UseCache
+        { uses = "actions/cache@v1"
+        , with =
+          { path = "\${{ steps.setup-haskell-cabal.outputs.cabal-store }}"
+          , key = "\${{ runner.os }}-\${{ matrix.ghc }}-cabal"
+          , restoreKeys = None Text
+          }
+        }
+
 let checkout =
       BuildStep.Uses { uses = "actions/checkout@v1", with = None VersionInfo }
 
@@ -161,10 +171,10 @@ let generalCi =
       → λ(mat : Optional DhallMatrix.Type)
       →   CI::{
           , jobs.build =
-              { runs-on = printOS OS.Ubuntu1804
-              , steps = sts
-              , strategy = mapOptional DhallMatrix.Type Matrix mkMatrix mat
-              }
+            { runs-on = printOS OS.Ubuntu1804
+            , steps = sts
+            , strategy = mapOptional DhallMatrix.Type Matrix mkMatrix mat
+            }
           }
         : CI.Type
 
@@ -172,7 +182,14 @@ let ciNoMatrix = λ(sts : List BuildStep) → generalCi sts (None DhallMatrix.Ty
 
 let stepsEnv =
         λ(v : VersionInfo)
-      →   [ checkout, haskellEnv v, cabalDeps, cabalBuild, cabalTest, cabalDoc ]
+      →   [ checkout
+          , haskellEnv v
+          , cache
+          , cabalDeps
+          , cabalBuild
+          , cabalTest
+          , cabalDoc
+          ]
         : List BuildStep
 
 let matrixSteps = stepsEnv matrixEnv : List BuildStep
@@ -187,44 +204,45 @@ let hlintAction =
 
 let defaultCi = generalCi defaultSteps (None DhallMatrix.Type) : CI.Type
 
-in  { VersionInfo = VersionInfo
-    , BuildStep = BuildStep
-    , Matrix = Matrix
-    , CI = CI
-    , GHC = GHC
-    , Cabal = Cabal
-    , DhallVersion = DhallVersion
-    , DhallMatrix = DhallMatrix
-    , CacheCfg = CacheCfg
-    , OS = OS
-    , PyInfo = PyInfo
-    , Event = Event
-    , cabalDoc = cabalDoc
-    , cabalTest = cabalTest
-    , cabalDeps = cabalDeps
-    , cabalBuild = cabalBuild
-    , cabalWithFlags = cabalWithFlags
-    , cabalBuildWithFlags = cabalBuildWithFlags
-    , cabalTestProfiling = cabalTestProfiling
-    , cabalTestCoverage = cabalTestCoverage
-    , checkout = checkout
-    , haskellEnv = haskellEnv
-    , defaultEnv = defaultEnv
-    , latestEnv = latestEnv
-    , matrixEnv = matrixEnv
-    , defaultCi = defaultCi
-    , generalCi = generalCi
-    , mkMatrix = mkMatrix
-    , printMatrix = printMatrix
-    , printEnv = printEnv
-    , printGhc = printGhc
-    , printCabal = printCabal
-    , printOS = printOS
-    , stepsEnv = stepsEnv
-    , matrixOS = matrixOS
-    , matrixSteps = matrixSteps
-    , defaultSteps = defaultSteps
-    , hlintDirs = hlintDirs
-    , hlintAction = hlintAction
-    , ciNoMatrix = ciNoMatrix
+in  { VersionInfo
+    , BuildStep
+    , Matrix
+    , CI
+    , GHC
+    , Cabal
+    , DhallVersion
+    , DhallMatrix
+    , CacheCfg
+    , OS
+    , PyInfo
+    , Event
+    , cabalDoc
+    , cabalTest
+    , cabalDeps
+    , cabalBuild
+    , cabalWithFlags
+    , cabalBuildWithFlags
+    , cabalTestProfiling
+    , cabalTestCoverage
+    , checkout
+    , haskellEnv
+    , defaultEnv
+    , latestEnv
+    , matrixEnv
+    , defaultCi
+    , generalCi
+    , mkMatrix
+    , printMatrix
+    , printEnv
+    , printGhc
+    , printCabal
+    , printOS
+    , stepsEnv
+    , matrixOS
+    , matrixSteps
+    , defaultSteps
+    , hlintDirs
+    , hlintAction
+    , ciNoMatrix
+    , cache
     }

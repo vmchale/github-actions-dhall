@@ -37,8 +37,4 @@ let yamlCi =
           ⫽ { name = "YAML check" }
         : pyCi.CI.Type
 
-in  { checkYaml = checkYaml
-    , yamlCi = yamlCi
-    , CI = pyCi.CI.Type
-    , Event = pyCi.Event
-    }
+in  { checkYaml, yamlCi, CI = pyCi.CI.Type, Event = pyCi.Event }

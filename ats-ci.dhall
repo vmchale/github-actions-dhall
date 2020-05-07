@@ -66,13 +66,13 @@ let atsCi =
         atsSteps [ haskellCi.checkout, atspkgInstall, atsBuild (None Text) ]
       : haskellCi.CI.Type
 
-in  { atspkgInstall = atspkgInstall
-    , atsBuild = atsBuild
-    , atsBuildTargets = atsBuildTargets
-    , atsTest = atsTest
-    , atsCi = atsCi
-    , atsSteps = atsSteps
-    , atsCheckPkg = atsCheckPkg
+in  { atspkgInstall
+    , atsBuild
+    , atsBuildTargets
+    , atsTest
+    , atsCi
+    , atsSteps
+    , atsCheckPkg
     , checkout = haskellCi.checkout
     , CI = haskellCi.CI
     , BuildStep = haskellCi.BuildStep

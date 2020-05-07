@@ -47,6 +47,7 @@ let futharkSteps =
       →   haskellCi.ciNoMatrix
             (   [ haskellCi.checkout
                 , haskellCi.haskellEnv haskellCi.latestEnv
+                , haskellCi.cache
                 , futharkInstall
                 ]
               # steps
@@ -58,8 +59,8 @@ let futharkCi =
       → futharkSteps [ checkFuthark futs ] : haskellCi.CI.Type
 
 in  { CI = haskellCi.CI.Type
-    , futharkSteps = futharkSteps
-    , checkFuthark = checkFuthark
-    , futharkCi = futharkCi
-    , futharkPkgDeps = futharkPkgDeps
+    , futharkSteps
+    , checkFuthark
+    , futharkCi
+    , futharkPkgDeps
     }
