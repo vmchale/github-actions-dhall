@@ -7,9 +7,9 @@ let mapOptional =
 let concatSep =
       https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/Text/concatSep sha256:e4401d69918c61b92a4c0288f7d60a6560ca99726138ed8ebc58dca2cd205e58
 
-let GHC = < GHC802 | GHC822 | GHC844 | GHC865 | GHC883 >
+let GHC = < GHC7103 | GHC802 | GHC822 | GHC844 | GHC865 | GHC883 | GHC8101 >
 
-let Cabal = < Cabal30 | Cabal24 | Cabal22 | Cabal20 >
+let Cabal = < Cabal32 | Cabal30 | Cabal24 | Cabal22 | Cabal20 >
 
 let OS = < Ubuntu1804 | Ubuntu1604 | MacOS | Windows >
 
@@ -35,7 +35,7 @@ let Matrix = { matrix : { ghc : List Text, cabal : List Text } }
 
 let DhallMatrix =
       { Type = { ghc : List GHC, cabal : List Cabal }
-      , default = { ghc = [ GHC.GHC865 ], cabal = [ Cabal.Cabal30 ] }
+      , default = { ghc = [ GHC.GHC865 ], cabal = [ Cabal.Cabal32 ] }
       }
 
 let Event = < push | release | pull_request >
@@ -58,11 +58,13 @@ let CI =
 let printGhc =
         λ(ghc : GHC)
       → merge
-          { GHC802 = "8.0.2"
+          { GHC7103 = "7.10.3"
+          , GHC802 = "8.0.2"
           , GHC822 = "8.2.2"
           , GHC844 = "8.4.4"
           , GHC865 = "8.6.5"
           , GHC883 = "8.8.3"
+          , GHC8101 = "8.10.1"
           }
           ghc
 
@@ -79,7 +81,12 @@ let printOS =
 let printCabal =
         λ(cabal : Cabal)
       → merge
-          { Cabal30 = "3.0", Cabal24 = "2.4", Cabal22 = "2.2", Cabal20 = "2.0" }
+          { Cabal32 = "3.2"
+          , Cabal30 = "3.0"
+          , Cabal24 = "2.4"
+          , Cabal22 = "2.2"
+          , Cabal20 = "2.0"
+          }
           cabal
 
 let printEnv =
@@ -120,10 +127,10 @@ let haskellEnv =
           }
 
 let defaultEnv =
-      printEnv { ghc-version = GHC.GHC883, cabal-version = Cabal.Cabal30 }
+      printEnv { ghc-version = GHC.GHC883, cabal-version = Cabal.Cabal32 }
 
 let latestEnv =
-      printEnv { ghc-version = GHC.GHC883, cabal-version = Cabal.Cabal30 }
+      printEnv { ghc-version = GHC.GHC883, cabal-version = Cabal.Cabal32 }
 
 let matrixOS = "\${{ matrix.operating-system }}"
 
