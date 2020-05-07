@@ -22,4 +22,4 @@ let tomlCi =
           ⫽ { name = "Toml check" }
         : haskellCi.CI.Type
 
-in  { checkToml = checkToml, tomlCi = tomlCi, CI = haskellCi.CI.Type }
+in  { checkToml, tomlCi, CI = haskellCi.CI.Type }

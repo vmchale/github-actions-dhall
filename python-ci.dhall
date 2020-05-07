@@ -37,16 +37,16 @@ let wheelInstall =
         }
 
 in  { PyInfo = haskellCi.PyInfo
-    , PyInfoDhall = PyInfoDhall
-    , PyArch = PyArch
-    , PyVer = PyVer
+    , PyInfoDhall
+    , PyArch
+    , PyVer
     , BuildStep = haskellCi.BuildStep
     , CI = haskellCi.CI
     , Event = haskellCi.Event
-    , printPyInfoDhall = printPyInfoDhall
-    , printPyArch = printPyArch
-    , printPyVer = printPyVer
+    , printPyInfoDhall
+    , printPyArch
+    , printPyVer
     , ciNoMatrix = haskellCi.ciNoMatrix
     , checkout = haskellCi.checkout
-    , wheelInstall = wheelInstall
+    , wheelInstall
     }
