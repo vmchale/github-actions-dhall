@@ -98,7 +98,7 @@ let cache =
       BuildStep.UseCache
         { uses = "actions/cache@v1"
         , with =
-          { path = "\${{ steps.setup-haskell-cabal.outputs.cabal-store }}"
+          { path = "~/.cabal"
           , key = "\${{ runner.os }}-\${{ matrix.ghc }}-cabal"
           , restoreKeys = None Text
           }
