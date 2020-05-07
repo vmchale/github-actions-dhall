@@ -96,9 +96,9 @@ let printMatrix =
 
 let cache =
       BuildStep.UseCache
-        { uses = "actions/cache@v1"
+        { uses = "actions/cache@v1.1"
         , with =
-          { path = "~/.cabal"
+          { path = "\${{ steps.setup-haskell-cabal.outputs.cabal-store }}"
           , key = "\${{ runner.os }}-\${{ matrix.ghc }}-cabal"
           , restoreKeys = None Text
           }
