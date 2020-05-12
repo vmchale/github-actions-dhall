@@ -13,7 +13,24 @@ let Cabal = < Cabal32 | Cabal30 | Cabal24 | Cabal22 | Cabal20 >
 
 let OS = < Ubuntu1804 | Ubuntu1604 | MacOS | Windows >
 
-let VersionInfo = { ghc-version : Text, cabal-version : Text }
+let VersionInfo =
+      { Type =
+          { ghc-version : Optional Text
+          , cabal-version : Optional Text
+          , stack-version : Optional Text
+          , enable-stack : Optional Bool
+          , stack-no-global : Optional Bool
+          , stack-setup-ghc : Optional Bool
+          }
+      , default =
+        { ghc-version = Some "8.10.1"
+        , cabal-version = Some "3.2"
+        , stack-version = None Text
+        , enable-stack = Some False
+        , stack-no-global = None Bool
+        , stack-setup-ghc = None Bool
+        }
+      }
 
 let PyInfo = { python-version : Text, architecture : Optional Text }
 
@@ -23,7 +40,8 @@ let CacheCfg =
       }
 
 let BuildStep =
-      < Uses : { uses : Text, id : Optional Text, with : Optional VersionInfo }
+      < Uses :
+          { uses : Text, id : Optional Text, with : Optional VersionInfo.Type }
       | Name : { name : Text, run : Text }
       | UseCache : { uses : Text, with : CacheCfg.Type }
       | UsePy : { uses : Text, with : PyInfo }
@@ -56,8 +74,8 @@ let CI =
       }
 
 let printGhc =
-        λ(ghc : GHC)
-      → merge
+      λ(ghc : GHC) →
+        merge
           { GHC7103 = "7.10.3"
           , GHC802 = "8.0.2"
           , GHC822 = "8.2.2"
@@ -69,8 +87,8 @@ let printGhc =
           ghc
 
 let printOS =
-        λ(os : OS)
-      → merge
+      λ(os : OS) →
+        merge
           { Windows = "windows-latest"
           , Ubuntu1804 = "ubuntu-18.04"
           , Ubuntu1604 = "ubuntu-16.04"
@@ -79,8 +97,8 @@ let printOS =
           os
 
 let printCabal =
-        λ(cabal : Cabal)
-      → merge
+      λ(cabal : Cabal) →
+        merge
           { Cabal32 = "3.2"
           , Cabal30 = "3.0"
           , Cabal24 = "2.4"
@@ -90,14 +108,15 @@ let printCabal =
           cabal
 
 let printEnv =
-        λ(v : DhallVersion)
-      → { ghc-version = printGhc v.ghc-version
-        , cabal-version = printCabal v.cabal-version
+      λ(v : DhallVersion) →
+        VersionInfo::{
+        , ghc-version = Some (printGhc v.ghc-version)
+        , cabal-version = Some (printCabal v.cabal-version)
         }
 
 let printMatrix =
-        λ(v : DhallMatrix.Type)
-      → { ghc = map GHC Text printGhc v.ghc
+      λ(v : DhallMatrix.Type) →
+        { ghc = map GHC Text printGhc v.ghc
         , cabal = map Cabal Text printCabal v.cabal
         }
 
@@ -111,16 +130,26 @@ let cache =
           }
         }
 
+let stackCache =
+      BuildStep.UseCache
+        { uses = "actions/cache@v1"
+        , with =
+          { path = "~/.stack"
+          , key = "\${{ runner.os }}-\${{ matrix.ghc }}-stack"
+          , restoreKeys = None Text
+          }
+        }
+
 let checkout =
       BuildStep.Uses
         { uses = "actions/checkout@v1"
         , id = None Text
-        , with = None VersionInfo
+        , with = None VersionInfo.Type
         }
 
 let haskellEnv =
-        λ(v : VersionInfo)
-      → BuildStep.Uses
+      λ(v : VersionInfo.Type) →
+        BuildStep.Uses
           { uses = "actions/setup-haskell@v1.1"
           , id = Some "setup-haskell-cabal"
           , with = Some v
@@ -135,15 +164,26 @@ let latestEnv =
 let matrixOS = "\${{ matrix.operating-system }}"
 
 let matrixEnv =
-      { ghc-version = "\${{ matrix.ghc }}"
-      , cabal-version = "\${{ matrix.cabal }}"
+      VersionInfo::{
+      , ghc-version = Some "\${{ matrix.ghc }}"
+      , cabal-version = Some "\${{ matrix.cabal }}"
       }
+
+let stackEnv =
+        { ghc-version = Some "8.6.5"
+        , cabal-version = None Text
+        , stack-version = Some "latest"
+        , enable-stack = Some True
+        , stack-no-global = Some True
+        , stack-setup-ghc = None Bool
+        }
+      : VersionInfo.Type
 
 let mkMatrix = λ(st : DhallMatrix.Type) → { matrix = printMatrix st } : Matrix
 
 let hlintDirs =
-        λ(dirs : List Text)
-      → let bashDirs = concatSep " " dirs
+      λ(dirs : List Text) →
+        let bashDirs = concatSep " " dirs
 
         in  BuildStep.Name
               { name = "Run hlint"
@@ -161,19 +201,32 @@ let cabalDeps =
             ''
         }
 
-let cabalWithFlags =
-        λ(subcommand : Text)
-      → λ(flags : List Text)
-      → let flagStr = concatSep " " flags
+let cmdWithFlags =
+      λ(cmd : Text) →
+      λ(subcommand : Text) →
+      λ(flags : List Text) →
+        let flagStr = concatSep " " flags
 
         in  BuildStep.Name
-              { name = subcommand, run = "cabal ${subcommand} ${flagStr}" }
+              { name = subcommand, run = "${cmd} ${subcommand} ${flagStr}" }
+
+let cabalWithFlags = cmdWithFlags "cabal"
 
 let cabalBuildWithFlags = cabalWithFlags "build"
 
 let cabalBuild = cabalBuildWithFlags [ "--enable-tests", "--enable-benchmarks" ]
 
+let stackWithFlags = cmdWithFlags "stack"
+
+let stackBuildWithFlags = stackWithFlags "build"
+
+let stackBuild =
+      stackBuildWithFlags
+        [ "--bench", "--test", "--no-run-tests", "--no-run-benchmarks" ]
+
 let cabalTest = cabalWithFlags "test" ([] : List Text)
+
+let stackTest = stackWithFlags "test" ([] : List Text)
 
 let cabalTestProfiling = cabalWithFlags "test" [ "--enable-profiling" ]
 
@@ -182,9 +235,9 @@ let cabalTestCoverage = cabalWithFlags "test" [ "--enable-coverage" ]
 let cabalDoc = cabalWithFlags "haddock" ([] : List Text)
 
 let generalCi =
-        λ(sts : List BuildStep)
-      → λ(mat : Optional DhallMatrix.Type)
-      →   CI::{
+      λ(sts : List BuildStep) →
+      λ(mat : Optional DhallMatrix.Type) →
+          CI::{
           , jobs.build =
             { runs-on = printOS OS.Ubuntu1804
             , steps = sts
@@ -196,8 +249,8 @@ let generalCi =
 let ciNoMatrix = λ(sts : List BuildStep) → generalCi sts (None DhallMatrix.Type)
 
 let stepsEnv =
-        λ(v : VersionInfo)
-      →   [ checkout
+      λ(v : VersionInfo.Type) →
+          [ checkout
           , haskellEnv v
           , cache
           , cabalDeps
@@ -207,13 +260,17 @@ let stepsEnv =
           ]
         : List BuildStep
 
+let stackSteps =
+        [ checkout, haskellEnv stackEnv, stackCache, stackBuild, stackTest ]
+      : List BuildStep
+
 let matrixSteps = stepsEnv matrixEnv : List BuildStep
 
 let defaultSteps = stepsEnv defaultEnv : List BuildStep
 
 let hlintAction =
-        λ(dirs : List Text)
-      →     generalCi [ checkout, hlintDirs dirs ] (None DhallMatrix.Type)
+      λ(dirs : List Text) →
+            generalCi [ checkout, hlintDirs dirs ] (None DhallMatrix.Type)
           ⫽ { name = "HLint checks" }
         : CI.Type
 
@@ -260,4 +317,10 @@ in  { VersionInfo
     , hlintAction
     , ciNoMatrix
     , cache
+    , stackEnv
+    , stackWithFlags
+    , stackSteps
+    , stackBuild
+    , stackTest
+    , stackCache
     }
