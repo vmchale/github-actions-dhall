@@ -7,6 +7,7 @@ jobs:
         uses: "actions/setup-haskell@v1.1"
         with:
           cabal-version: '3.2'
+          enable-stack: false
           ghc-version: '8.8.3'
       - uses: "actions/cache@v1"
         with:
