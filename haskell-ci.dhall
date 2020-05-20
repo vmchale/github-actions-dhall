@@ -48,7 +48,7 @@ let BuildStep =
       | AwsEnv :
           { name : Text
           , run : Text
-          , env : { AWS_ACCESS_KEY : Text, AWS_SECRET_KEY : Text }
+          , env : { AWS_ACCESS_KEY_ID : Text, AWS_SECRET_ACCESS_KEY : Text }
           }
       >
 
