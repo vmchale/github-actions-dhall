@@ -1,5 +1,5 @@
 let haskellCi =
-      ./haskell-ci.dhall sha256:2f7f742e67407a569b4b4749692d29d520131fb146a6e096012ff31c5f43bb03
+      ./haskell-ci.dhall sha256:1adcb8f5a1e09f8b22ac04f2437a490a7ae2a85b192d7ae8cc7b745698e41cf7
 
 in    haskellCi.generalCi
         haskellCi.matrixSteps
