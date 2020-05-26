@@ -45,6 +45,11 @@ let BuildStep =
       | Name : { name : Text, run : Text }
       | UseCache : { uses : Text, with : CacheCfg.Type }
       | UsePy : { uses : Text, with : PyInfo }
+      | AwsEnv :
+          { name : Text
+          , run : Text
+          , env : { AWS_ACCESS_KEY_ID : Text, AWS_SECRET_ACCESS_KEY : Text }
+          }
       >
 
 let DhallVersion = { ghc-version : GHC, cabal-version : Cabal }
