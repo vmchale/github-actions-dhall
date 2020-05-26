@@ -1,44 +1,44 @@
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    "runs-on": "ubuntu-18.04"
     steps:
-      - uses: "actions/checkout@v1"
-      - id: setup-haskell-cabal
-        uses: "actions/setup-haskell@v1.1"
-        with:
-          cabal-version: '3.2'
-          enable-stack: false
-          ghc-version: '8.8.3'
-      - uses: "actions/cache@v1"
-        with:
-          key: "${{ runner.os }}-${{ matrix.ghc }}-cabal"
-          path: "${{ steps.setup-haskell-cabal.outputs.cabal-store }}"
-      - name: Install dhall
-        run: |
-          cabal update
-          cd "$(mktemp -d /tmp/dhall-XXX)"
-          cabal install dhall
-      - name: "Install dhall-to-yaml &c."
-        run: |
-          cabal update
-          cd "$(mktemp -d /tmp/dhall-XXX)"
-          cabal install dhall-json
-      - name: Check Dhall
-        run: |
-          export PATH=$HOME/.cabal/bin:$PATH
-          dhall --file haskell-ci.dhall
-          dhall --file ats-ci.dhall
-          dhall --file toml-ci.dhall
-          dhall --file self-ci.dhall
-          dhall --file python-ci.dhall
-          dhall --file yaml-ci.dhall
-          dhall --file egison-ci.dhall
-          dhall --file futhark-ci.dhall
-      - name: Check Dhall can be converted to YAML
-        run: |
-          export PATH=$HOME/.cabal/bin:$PATH
-          dhall-to-yaml --file self-ci.dhall
-          dhall-to-yaml --file example.dhall
+    - uses: "actions/checkout@v1"
+    - id: "setup-haskell-cabal"
+      uses: "actions/setup-haskell@v1.1"
+      with:
+        "cabal-version": '3.2'
+        "enable-stack": false
+        "ghc-version": '8.8.3'
+    - uses: "actions/cache@v1"
+      with:
+        key: "${{ runner.os }}-${{ matrix.ghc }}-cabal"
+        path: "${{ steps.setup-haskell-cabal.outputs.cabal-store }}"
+    - name: Install dhall
+      run: |
+        cabal update
+        cd "$(mktemp -d /tmp/dhall-XXX)"
+        cabal install dhall
+    - name: "Install dhall-to-yaml &c."
+      run: |
+        cabal update
+        cd "$(mktemp -d /tmp/dhall-XXX)"
+        cabal install dhall-json
+    - name: Check Dhall
+      run: |
+        export PATH=$HOME/.cabal/bin:$PATH
+        dhall --file haskell-ci.dhall
+        dhall --file ats-ci.dhall
+        dhall --file toml-ci.dhall
+        dhall --file self-ci.dhall
+        dhall --file python-ci.dhall
+        dhall --file yaml-ci.dhall
+        dhall --file egison-ci.dhall
+        dhall --file futhark-ci.dhall
+    - name: Check Dhall can be converted to YAML
+      run: |
+        export PATH=$HOME/.cabal/bin:$PATH
+        dhall-to-yaml --file self-ci.dhall
+        dhall-to-yaml --file example.dhall
 name: Dhall CI
 on:
-  - push
+- push
