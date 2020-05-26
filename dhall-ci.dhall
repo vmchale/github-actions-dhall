@@ -21,13 +21,13 @@ let dhallYamlInstall =
             ''
             cabal update
             cd "$(mktemp -d /tmp/dhall-XXX)"
-            cabal install dhall-json
+            cabal install dhall-yaml
             ''
         }
 
 let checkDhall =
-        λ(dhalls : List Text)
-      → haskellCi.BuildStep.Name
+      λ(dhalls : List Text) →
+        haskellCi.BuildStep.Name
           { name = "Check Dhall"
           , run =
                   ''
@@ -35,8 +35,8 @@ let checkDhall =
                   ''
               ++  concatMap
                     Text
-                    (   λ(d : Text)
-                      → ''
+                    ( λ(d : Text) →
+                        ''
                         dhall --file ${d}
                         ''
                     )
@@ -44,8 +44,8 @@ let checkDhall =
           }
 
 let checkDhallYaml =
-        λ(dhalls : List Text)
-      → haskellCi.BuildStep.Name
+      λ(dhalls : List Text) →
+        haskellCi.BuildStep.Name
           { name = "Check Dhall can be converted to YAML"
           , run =
                   ''
@@ -53,17 +53,17 @@ let checkDhallYaml =
                   ''
               ++  concatMap
                     Text
-                    (   λ(d : Text)
-                      → ''
-                        dhall-to-yaml --file ${d}
+                    ( λ(d : Text) →
+                        ''
+                        dhall-to-yaml-ng --file ${d}
                         ''
                     )
                     dhalls
           }
 
 let dhallSteps =
-        λ(steps : List haskellCi.BuildStep)
-      →     haskellCi.ciNoMatrix
+      λ(steps : List haskellCi.BuildStep) →
+            haskellCi.ciNoMatrix
               (   [ haskellCi.checkout
                   , haskellCi.haskellEnv haskellCi.latestEnv
                   , haskellCi.cache
@@ -75,8 +75,8 @@ let dhallSteps =
         : haskellCi.CI.Type
 
 let dhallCi =
-        λ(dhalls : List Text)
-      → dhallSteps [ checkDhall dhalls ] : haskellCi.CI.Type
+      λ(dhalls : List Text) →
+        dhallSteps [ checkDhall dhalls ] : haskellCi.CI.Type
 
 in  { dhallInstall
     , dhallYamlInstall
