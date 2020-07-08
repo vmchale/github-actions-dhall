@@ -2,7 +2,7 @@ let map =
       https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/List/map sha256:dd845ffb4568d40327f2a817eb42d1c6138b929ca758d50bc33112ef3c885680
 
 let mapOptional =
-      https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/Optional/map sha256:e7f44219250b89b094fbf9996e04b5daafc0902d864113420072ae60706ac73d
+      https://raw.githubusercontent.com/dhall-lang/dhall-lang/87993319329f3c00920d6e882365276925a4aa6a/Prelude/Optional/map sha256:501534192d988218d43261c299cc1d1e0b13d25df388937add784778ab0054fa
 
 let concatSep =
       https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/Text/concatSep sha256:e4401d69918c61b92a4c0288f7d60a6560ca99726138ed8ebc58dca2cd205e58
@@ -41,10 +41,13 @@ let CacheCfg =
 
 let BuildStep =
       < Uses :
-          { uses : Text, id : Optional Text, with : Optional VersionInfo.Type }
+          { uses : Text
+          , id : Optional Text
+          , `with` : Optional VersionInfo.Type
+          }
       | Name : { name : Text, run : Text }
-      | UseCache : { uses : Text, with : CacheCfg.Type }
-      | UsePy : { uses : Text, with : PyInfo }
+      | UseCache : { uses : Text, `with` : CacheCfg.Type }
+      | UsePy : { uses : Text, `with` : PyInfo }
       | AwsEnv :
           { name : Text
           , run : Text
@@ -128,7 +131,7 @@ let printMatrix =
 let cache =
       BuildStep.UseCache
         { uses = "actions/cache@v1"
-        , with =
+        , `with` =
           { path = "\${{ steps.setup-haskell-cabal.outputs.cabal-store }}"
           , key = "\${{ runner.os }}-\${{ matrix.ghc }}-cabal"
           , restoreKeys = None Text
@@ -138,7 +141,7 @@ let cache =
 let stackCache =
       BuildStep.UseCache
         { uses = "actions/cache@v1"
-        , with =
+        , `with` =
           { path = "~/.stack"
           , key = "\${{ runner.os }}-\${{ matrix.ghc }}-stack"
           , restoreKeys = None Text
@@ -149,7 +152,7 @@ let checkout =
       BuildStep.Uses
         { uses = "actions/checkout@v1"
         , id = None Text
-        , with = None VersionInfo.Type
+        , `with` = None VersionInfo.Type
         }
 
 let haskellEnv =
@@ -157,7 +160,7 @@ let haskellEnv =
         BuildStep.Uses
           { uses = "actions/setup-haskell@v1.1"
           , id = Some "setup-haskell-cabal"
-          , with = Some v
+          , `with` = Some v
           }
 
 let defaultEnv =

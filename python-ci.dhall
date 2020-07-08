@@ -1,7 +1,7 @@
 let haskellCi = ./haskell-ci.dhall
 
 let mapOptional =
-      https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/Optional/map sha256:e7f44219250b89b094fbf9996e04b5daafc0902d864113420072ae60706ac73d
+      https://raw.githubusercontent.com/dhall-lang/dhall-lang/87993319329f3c00920d6e882365276925a4aa6a/Prelude/Optional/map sha256:501534192d988218d43261c299cc1d1e0b13d25df388937add784778ab0054fa
 
 let PyArch = < X86 | X64 >
 
@@ -13,16 +13,16 @@ let PyInfoDhall =
       }
 
 let printPyVer =
-        λ(pyVer : PyVer)
-      → merge
+      λ(pyVer : PyVer) →
+        merge
           { Py2 = "2.x", Py3 = "3.x", PyPy2 = "pypy2", PyPy3 = "pypy3" }
           pyVer
 
 let printPyArch = λ(pyArch : PyArch) → merge { X86 = "x86", X64 = "x64" } pyArch
 
 let printPyInfoDhall =
-        λ(pyInfo : PyInfoDhall.Type)
-      → { python-version = printPyVer pyInfo.python-version
+      λ(pyInfo : PyInfoDhall.Type) →
+        { python-version = printPyVer pyInfo.python-version
         , architecture = mapOptional PyArch Text printPyArch pyInfo.architecture
         }
 

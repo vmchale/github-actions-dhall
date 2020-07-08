@@ -40,5 +40,5 @@ jobs:
         dhall-to-yaml-ng --file self-ci.dhall
         dhall-to-yaml-ng --file example.dhall
 name: Dhall CI
-on:
+'on':
 - push
