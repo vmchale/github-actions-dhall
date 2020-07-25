@@ -12,6 +12,9 @@ main :: IO ()
 main = shakeArgs shakeOptions { shakeFiles = ".shake", shakeLint = Just LintBasic, shakeChange = ChangeModtimeAndDigestInput } $ do
     want [ ".github/workflows/dhall.yml" ]
 
+    "docs" ~>
+        command [] "dhall-docs" ["--input", ".", "--output-link", "docs"]
+
     ".github/workflows/dhall.yml" %> \out -> do
         let inp = "self-ci.dhall"
         needDhall [inp]
