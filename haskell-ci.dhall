@@ -232,7 +232,7 @@ let stackBuild =
       stackBuildWithFlags
         [ "--bench", "--test", "--no-run-tests", "--no-run-benchmarks" ]
 
-let cabalTest = cabalWithFlags "test" ([] : List Text)
+let cabalTest = cabalWithFlags "test" (["--enable-tests"] : List Text)
 
 let stackTest = stackWithFlags "test" ([] : List Text)
 
