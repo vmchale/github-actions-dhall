@@ -78,7 +78,8 @@ let CI =
                   }
               }
           }
-      , default = { name = "Haskell CI", on = [ Event.push ] }
+      , default =
+        { name = "Haskell CI", on = [ Event.push, Event.pull_request ] }
       }
 
 let printGhc =
