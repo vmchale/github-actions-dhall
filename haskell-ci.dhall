@@ -7,7 +7,7 @@ let mapOptional =
 let concatSep =
       https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/Text/concatSep sha256:e4401d69918c61b92a4c0288f7d60a6560ca99726138ed8ebc58dca2cd205e58
 
-let GHC = < GHC7103 | GHC802 | GHC822 | GHC844 | GHC865 | GHC883 | GHC8101 >
+let GHC = < GHC7103 | GHC802 | GHC822 | GHC844 | GHC865 | GHC883 | GHC884 | GHC8101 | GHC8102 | GHC8103 | GHC8104 | GHC901 >
 
 let Cabal = < Cabal32 | Cabal30 | Cabal24 | Cabal22 | Cabal20 >
 
@@ -23,7 +23,7 @@ let VersionInfo =
           , stack-setup-ghc : Optional Bool
           }
       , default =
-        { ghc-version = Some "8.10.1"
+        { ghc-version = Some "8.10.3"
         , cabal-version = Some "3.2"
         , stack-version = None Text
         , enable-stack = Some False
@@ -61,7 +61,7 @@ let Matrix = { matrix : { ghc : List Text, cabal : List Text } }
 
 let DhallMatrix =
       { Type = { ghc : List GHC, cabal : List Cabal }
-      , default = { ghc = [ GHC.GHC865 ], cabal = [ Cabal.Cabal32 ] }
+      , default = { ghc = [ GHC.GHC8103 ], cabal = [ Cabal.Cabal32 ] }
       }
 
 let Event = < push | release | pull_request >
@@ -91,7 +91,12 @@ let printGhc =
           , GHC844 = "8.4.4"
           , GHC865 = "8.6.5"
           , GHC883 = "8.8.3"
+          , GHC884 = "8.8.4"
           , GHC8101 = "8.10.1"
+          , GHC8102 = "8.10.2"
+          , GHC8103 = "8.10.3"
+          , GHC8104 = "8.10.4"
+          , GHC901 = "9.0.1"
           }
           ghc
 
@@ -165,10 +170,10 @@ let haskellEnv =
           }
 
 let defaultEnv =
-      printEnv { ghc-version = GHC.GHC883, cabal-version = Cabal.Cabal32 }
+      printEnv { ghc-version = GHC.GHC8103, cabal-version = Cabal.Cabal32 }
 
 let latestEnv =
-      printEnv { ghc-version = GHC.GHC883, cabal-version = Cabal.Cabal32 }
+      printEnv { ghc-version = GHC.GHC901, cabal-version = Cabal.Cabal32 }
 
 let matrixOS = "\${{ matrix.operating-system }}"
 
@@ -179,7 +184,7 @@ let matrixEnv =
       }
 
 let stackEnv =
-        { ghc-version = Some "8.6.5"
+        { ghc-version = Some "8.8.4"
         , cabal-version = None Text
         , stack-version = Some "latest"
         , enable-stack = Some True
