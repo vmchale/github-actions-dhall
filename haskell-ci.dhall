@@ -211,7 +211,7 @@ let cabalDeps =
         , run =
             ''
             cabal update
-            cabal build --enable-tests --enable-benchmarks --only-dependencies
+            cabal build all --enable-tests --enable-benchmarks --only-dependencies
             ''
         }
 
@@ -226,7 +226,7 @@ let cmdWithFlags =
 
 let cabalWithFlags = cmdWithFlags "cabal"
 
-let cabalBuildWithFlags = cabalWithFlags "build"
+let cabalBuildWithFlags = cabalWithFlags "build all"
 
 let cabalBuild = cabalBuildWithFlags [ "--enable-tests", "--enable-benchmarks" ]
 
@@ -238,15 +238,15 @@ let stackBuild =
       stackBuildWithFlags
         [ "--bench", "--test", "--no-run-tests", "--no-run-benchmarks" ]
 
-let cabalTest = cabalWithFlags "test" (["--enable-tests"] : List Text)
+let cabalTest = cabalWithFlags "test all" (["--enable-tests"] : List Text)
 
 let stackTest = stackWithFlags "test" ([] : List Text)
 
-let cabalTestProfiling = cabalWithFlags "test" [ "--enable-profiling" ]
+let cabalTestProfiling = cabalWithFlags "test all" [ "--enable-profiling" ]
 
-let cabalTestCoverage = cabalWithFlags "test" [ "--enable-coverage" ]
+let cabalTestCoverage = cabalWithFlags "test all" [ "--enable-coverage" ]
 
-let cabalDoc = cabalWithFlags "haddock" ([] : List Text)
+let cabalDoc = cabalWithFlags "haddock all" ([] : List Text)
 
 let generalCi =
       λ(sts : List BuildStep) →
