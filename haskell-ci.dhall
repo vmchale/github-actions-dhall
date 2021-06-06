@@ -205,14 +205,17 @@ let hlintDirs =
                   "curl -sSL https://raw.github.com/ndmitchell/hlint/master/misc/run.sh | sh -s ${bashDirs}"
               }
 
+let cabalUpdate =
+      BuildStep.Name
+        { name = "Update Hackage repository", run = "cabal update" }
+
+let cabalFreeze = BuildStep.Name { name = "freeze", run = "cabal freeze" }
+
 let cabalDeps =
       BuildStep.Name
         { name = "Install dependencies"
         , run =
-            ''
-            cabal update
-            cabal build all --enable-tests --enable-benchmarks --only-dependencies
-            ''
+            "cabal build all --enable-tests --enable-benchmarks --only-dependencies"
         }
 
 let cmdWithFlags =
@@ -266,6 +269,8 @@ let stepsEnv =
       λ(v : VersionInfo.Type) →
           [ checkout
           , haskellEnv v
+          , cabalUpdate
+          , cabalFreeze
           , cache
           , cabalDeps
           , cabalBuild
