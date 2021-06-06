@@ -7,7 +7,20 @@ let mapOptional =
 let concatSep =
       https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/Text/concatSep sha256:e4401d69918c61b92a4c0288f7d60a6560ca99726138ed8ebc58dca2cd205e58
 
-let GHC = < GHC7103 | GHC802 | GHC822 | GHC844 | GHC865 | GHC883 | GHC884 | GHC8101 | GHC8102 | GHC8103 | GHC8104 | GHC901 >
+let GHC =
+      < GHC7103
+      | GHC802
+      | GHC822
+      | GHC844
+      | GHC865
+      | GHC883
+      | GHC884
+      | GHC8101
+      | GHC8102
+      | GHC8103
+      | GHC8104
+      | GHC901
+      >
 
 let Cabal = < Cabal32 | Cabal30 | Cabal24 | Cabal22 | Cabal20 >
 
@@ -243,7 +256,7 @@ let stackBuild =
       stackBuildWithFlags
         [ "--bench", "--test", "--no-run-tests", "--no-run-benchmarks" ]
 
-let cabalTest = cabalWithFlags "test all" (["--enable-tests"] : List Text)
+let cabalTest = cabalWithFlags "test all" ([ "--enable-tests" ] : List Text)
 
 let stackTest = stackWithFlags "test" ([] : List Text)
 
@@ -257,7 +270,8 @@ let generalCi =
       λ(sts : List BuildStep) →
       λ(mat : Optional DhallMatrix.Type) →
           CI::{
-          , jobs.build =
+          , jobs.build
+            =
             { runs-on = printOS OS.Ubuntu1804
             , steps = sts
             , strategy = mapOptional DhallMatrix.Type Matrix mkMatrix mat
