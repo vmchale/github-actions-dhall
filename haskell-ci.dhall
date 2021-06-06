@@ -24,7 +24,7 @@ let GHC =
 
 let Cabal = < Cabal32 | Cabal30 | Cabal24 | Cabal22 | Cabal20 >
 
-let OS = < Ubuntu1804 | Ubuntu1604 | MacOS | Windows >
+let OS = < Ubuntu | Ubuntu2004 | Ubuntu1804 | Ubuntu1604 | MacOS | Windows >
 
 let VersionInfo =
       { Type =
@@ -117,6 +117,8 @@ let printOS =
       λ(os : OS) →
         merge
           { Windows = "windows-latest"
+          , Ubuntu = "ubuntu-latest"
+          , Ubuntu2004 = "ubuntu-20.04"
           , Ubuntu1804 = "ubuntu-18.04"
           , Ubuntu1604 = "ubuntu-16.04"
           , MacOS = "macos-latest"
