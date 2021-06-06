@@ -19,6 +19,7 @@ let GHC =
       | GHC8102
       | GHC8103
       | GHC8104
+      | GHC8105
       | GHC901
       >
 
@@ -74,7 +75,7 @@ let Matrix = { matrix : { ghc : List Text, cabal : List Text } }
 
 let DhallMatrix =
       { Type = { ghc : List GHC, cabal : List Cabal }
-      , default = { ghc = [ GHC.GHC8103 ], cabal = [ Cabal.Cabal32 ] }
+      , default = { ghc = [ GHC.GHC8105 ], cabal = [ Cabal.Cabal32 ] }
       }
 
 let Event = < push | release | pull_request >
@@ -109,6 +110,7 @@ let printGhc =
           , GHC8102 = "8.10.2"
           , GHC8103 = "8.10.3"
           , GHC8104 = "8.10.4"
+          , GHC8105 = "8.10.5"
           , GHC901 = "9.0.1"
           }
           ghc
@@ -187,7 +189,7 @@ let haskellEnv =
           }
 
 let defaultEnv =
-      printEnv { ghc-version = GHC.GHC8103, cabal-version = Cabal.Cabal32 }
+      printEnv { ghc-version = GHC.GHC8105, cabal-version = Cabal.Cabal32 }
 
 let latestEnv =
       printEnv { ghc-version = GHC.GHC901, cabal-version = Cabal.Cabal32 }
