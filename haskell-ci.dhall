@@ -7,11 +7,25 @@ let mapOptional =
 let concatSep =
       https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/Text/concatSep sha256:e4401d69918c61b92a4c0288f7d60a6560ca99726138ed8ebc58dca2cd205e58
 
-let GHC = < GHC7103 | GHC802 | GHC822 | GHC844 | GHC865 | GHC883 | GHC8101 >
+let GHC =
+      < GHC7103
+      | GHC802
+      | GHC822
+      | GHC844
+      | GHC865
+      | GHC883
+      | GHC884
+      | GHC8101
+      | GHC8102
+      | GHC8103
+      | GHC8104
+      | GHC8105
+      | GHC901
+      >
 
 let Cabal = < Cabal32 | Cabal30 | Cabal24 | Cabal22 | Cabal20 >
 
-let OS = < Ubuntu1804 | Ubuntu1604 | MacOS | Windows >
+let OS = < Ubuntu | Ubuntu2004 | Ubuntu1804 | Ubuntu1604 | MacOS | Windows >
 
 let VersionInfo =
       { Type =
@@ -23,7 +37,7 @@ let VersionInfo =
           , stack-setup-ghc : Optional Bool
           }
       , default =
-        { ghc-version = Some "8.10.1"
+        { ghc-version = Some "8.10.3"
         , cabal-version = Some "3.2"
         , stack-version = None Text
         , enable-stack = Some False
@@ -61,7 +75,7 @@ let Matrix = { matrix : { ghc : List Text, cabal : List Text } }
 
 let DhallMatrix =
       { Type = { ghc : List GHC, cabal : List Cabal }
-      , default = { ghc = [ GHC.GHC865 ], cabal = [ Cabal.Cabal32 ] }
+      , default = { ghc = [ GHC.GHC8105 ], cabal = [ Cabal.Cabal32 ] }
       }
 
 let Event = < push | release | pull_request >
@@ -78,7 +92,8 @@ let CI =
                   }
               }
           }
-      , default = { name = "Haskell CI", on = [ Event.push ] }
+      , default =
+        { name = "Haskell CI", on = [ Event.push, Event.pull_request ] }
       }
 
 let printGhc =
@@ -90,7 +105,13 @@ let printGhc =
           , GHC844 = "8.4.4"
           , GHC865 = "8.6.5"
           , GHC883 = "8.8.3"
+          , GHC884 = "8.8.4"
           , GHC8101 = "8.10.1"
+          , GHC8102 = "8.10.2"
+          , GHC8103 = "8.10.3"
+          , GHC8104 = "8.10.4"
+          , GHC8105 = "8.10.5"
+          , GHC901 = "9.0.1"
           }
           ghc
 
@@ -98,6 +119,8 @@ let printOS =
       λ(os : OS) →
         merge
           { Windows = "windows-latest"
+          , Ubuntu = "ubuntu-latest"
+          , Ubuntu2004 = "ubuntu-20.04"
           , Ubuntu1804 = "ubuntu-18.04"
           , Ubuntu1604 = "ubuntu-16.04"
           , MacOS = "macos-latest"
@@ -130,17 +153,19 @@ let printMatrix =
 
 let cache =
       BuildStep.UseCache
-        { uses = "actions/cache@v1"
+        { uses = "actions/cache@v2"
         , `with` =
-          { path = "\${{ steps.setup-haskell-cabal.outputs.cabal-store }}"
-          , key = "\${{ runner.os }}-\${{ matrix.ghc }}-cabal"
+          { path =
+              "\${{ steps.setup-haskell-cabal.outputs.cabal-store }} dist-newstyle"
+          , key =
+              "\${{ runner.os }}-\${{ matrix.ghc }}-cabal-\${{ hashFiles('cabal.project.freeze') }}"
           , restoreKeys = None Text
           }
         }
 
 let stackCache =
       BuildStep.UseCache
-        { uses = "actions/cache@v1"
+        { uses = "actions/cache@v2"
         , `with` =
           { path = "~/.stack"
           , key = "\${{ runner.os }}-\${{ matrix.ghc }}-stack"
@@ -158,16 +183,16 @@ let checkout =
 let haskellEnv =
       λ(v : VersionInfo.Type) →
         BuildStep.Uses
-          { uses = "actions/setup-haskell@v1.1"
+          { uses = "haskell/actions/setup@v1.2"
           , id = Some "setup-haskell-cabal"
           , `with` = Some v
           }
 
 let defaultEnv =
-      printEnv { ghc-version = GHC.GHC883, cabal-version = Cabal.Cabal32 }
+      printEnv { ghc-version = GHC.GHC8105, cabal-version = Cabal.Cabal32 }
 
 let latestEnv =
-      printEnv { ghc-version = GHC.GHC883, cabal-version = Cabal.Cabal32 }
+      printEnv { ghc-version = GHC.GHC901, cabal-version = Cabal.Cabal32 }
 
 let matrixOS = "\${{ matrix.operating-system }}"
 
@@ -178,7 +203,7 @@ let matrixEnv =
       }
 
 let stackEnv =
-        { ghc-version = Some "8.6.5"
+        { ghc-version = Some "8.8.4"
         , cabal-version = None Text
         , stack-version = Some "latest"
         , enable-stack = Some True
@@ -199,14 +224,30 @@ let hlintDirs =
                   "curl -sSL https://raw.github.com/ndmitchell/hlint/master/misc/run.sh | sh -s ${bashDirs}"
               }
 
+let cabalUpdate =
+      BuildStep.Name
+        { name = "Update Hackage repository", run = "cabal update" }
+
+-- use this eg. if you want to set specific flags or options like
+-- `-Werror` only on ci, not in the local dev environment.
+let cabalProjectFile =
+      BuildStep.Name
+        { name = "cabal.project.local.ci"
+        , run =
+            ''
+            if [ -e cabal.project.local.ci ]; then
+              cp cabal.project.local.ci cabal.project.local
+            fi
+            ''
+        }
+
+let cabalFreeze = BuildStep.Name { name = "freeze", run = "cabal freeze" }
+
 let cabalDeps =
       BuildStep.Name
         { name = "Install dependencies"
         , run =
-            ''
-            cabal update
-            cabal build --enable-tests --enable-benchmarks --only-dependencies
-            ''
+            "cabal build all --enable-tests --enable-benchmarks --only-dependencies"
         }
 
 let cmdWithFlags =
@@ -220,7 +261,7 @@ let cmdWithFlags =
 
 let cabalWithFlags = cmdWithFlags "cabal"
 
-let cabalBuildWithFlags = cabalWithFlags "build"
+let cabalBuildWithFlags = cabalWithFlags "build all"
 
 let cabalBuild = cabalBuildWithFlags [ "--enable-tests", "--enable-benchmarks" ]
 
@@ -232,22 +273,23 @@ let stackBuild =
       stackBuildWithFlags
         [ "--bench", "--test", "--no-run-tests", "--no-run-benchmarks" ]
 
-let cabalTest = cabalWithFlags "test" ([] : List Text)
+let cabalTest = cabalWithFlags "test all" ([ "--enable-tests" ] : List Text)
 
 let stackTest = stackWithFlags "test" ([] : List Text)
 
-let cabalTestProfiling = cabalWithFlags "test" [ "--enable-profiling" ]
+let cabalTestProfiling = cabalWithFlags "test all" [ "--enable-profiling" ]
 
-let cabalTestCoverage = cabalWithFlags "test" [ "--enable-coverage" ]
+let cabalTestCoverage = cabalWithFlags "test all" [ "--enable-coverage" ]
 
-let cabalDoc = cabalWithFlags "haddock" ([] : List Text)
+let cabalDoc = cabalWithFlags "haddock all" ([] : List Text)
 
 let generalCi =
       λ(sts : List BuildStep) →
       λ(mat : Optional DhallMatrix.Type) →
           CI::{
-          , jobs.build =
-            { runs-on = printOS OS.Ubuntu1804
+          , jobs.build
+            =
+            { runs-on = printOS OS.Ubuntu
             , steps = sts
             , strategy = mapOptional DhallMatrix.Type Matrix mkMatrix mat
             }
@@ -260,6 +302,9 @@ let stepsEnv =
       λ(v : VersionInfo.Type) →
           [ checkout
           , haskellEnv v
+          , cabalUpdate
+          , cabalProjectFile
+          , cabalFreeze
           , cache
           , cabalDeps
           , cabalBuild
