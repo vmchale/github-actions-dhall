@@ -228,6 +228,19 @@ let cabalUpdate =
       BuildStep.Name
         { name = "Update Hackage repository", run = "cabal update" }
 
+-- use this eg. if you want to set specific flags or options like
+-- `-Werror` only on ci, not in the local dev environment.
+let cabalProjectFile =
+      BuildStep.Name
+        { name = "cabal.project.local.ci"
+        , run =
+            ''
+            if [ -e cabal.project.local.ci ]; then
+              cp cabal.project.local.ci cabal.project.local
+            fi
+            ''
+        }
+
 let cabalFreeze = BuildStep.Name { name = "freeze", run = "cabal freeze" }
 
 let cabalDeps =
@@ -290,6 +303,7 @@ let stepsEnv =
           [ checkout
           , haskellEnv v
           , cabalUpdate
+          , cabalProjectFile
           , cabalFreeze
           , cache
           , cabalDeps
