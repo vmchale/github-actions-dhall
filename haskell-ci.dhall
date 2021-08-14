@@ -23,7 +23,7 @@ let GHC =
       | GHC901
       >
 
-let Cabal = < Cabal32 | Cabal30 | Cabal24 | Cabal22 | Cabal20 >
+let Cabal = < Cabal34 | Cabal32 | Cabal30 | Cabal24 | Cabal22 | Cabal20 >
 
 let OS = < Ubuntu | Ubuntu2004 | Ubuntu1804 | Ubuntu1604 | MacOS | Windows >
 
@@ -130,7 +130,8 @@ let printOS =
 let printCabal =
       λ(cabal : Cabal) →
         merge
-          { Cabal32 = "3.2"
+          { Cabal34 = "3.4"
+          , Cabal32 = "3.2"
           , Cabal30 = "3.0"
           , Cabal24 = "2.4"
           , Cabal22 = "2.2"
@@ -192,7 +193,7 @@ let defaultEnv =
       printEnv { ghc-version = GHC.GHC8105, cabal-version = Cabal.Cabal32 }
 
 let latestEnv =
-      printEnv { ghc-version = GHC.GHC901, cabal-version = Cabal.Cabal32 }
+      printEnv { ghc-version = GHC.GHC901, cabal-version = Cabal.Cabal34 }
 
 let matrixOS = "\${{ matrix.operating-system }}"
 
