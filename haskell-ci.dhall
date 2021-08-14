@@ -157,7 +157,10 @@ let cache =
         { uses = "actions/cache@v2"
         , `with` =
           { path =
-              "\${{ steps.setup-haskell-cabal.outputs.cabal-store }} dist-newstyle"
+               ''
+               ''${{ steps.setup-haskell-cabal.outputs.cabal-store }}
+               dist-newstyle
+               ''
           , key =
               "\${{ runner.os }}-\${{ matrix.ghc }}-cabal-\${{ hashFiles('cabal.project.freeze') }}"
           , restoreKeys = None Text
