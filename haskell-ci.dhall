@@ -23,6 +23,7 @@ let GHC =
       | GHC8106
       | GHC8107
       | GHC901
+      | GHC921
       >
 
 let Cabal = < Cabal34 | Cabal32 | Cabal30 | Cabal24 | Cabal22 | Cabal20 >
@@ -116,6 +117,7 @@ let printGhc =
           , GHC8106 = "8.10.6"
           , GHC8107 = "8.10.7"
           , GHC901 = "9.0.1"
+          , GHC921 = "9.2.1"
           }
           ghc
 
@@ -200,7 +202,7 @@ let defaultEnv =
       printEnv { ghc-version = GHC.GHC8107, cabal-version = Cabal.Cabal32 }
 
 let latestEnv =
-      printEnv { ghc-version = GHC.GHC901, cabal-version = Cabal.Cabal34 }
+      printEnv { ghc-version = GHC.GHC921, cabal-version = Cabal.Cabal34 }
 
 let matrixOS = "\${{ matrix.operating-system }}"
 
