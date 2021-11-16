@@ -20,6 +20,8 @@ let GHC =
       | GHC8103
       | GHC8104
       | GHC8105
+      | GHC8106
+      | GHC8107
       | GHC901
       >
 
@@ -37,7 +39,7 @@ let VersionInfo =
           , stack-setup-ghc : Optional Bool
           }
       , default =
-        { ghc-version = Some "8.10.3"
+        { ghc-version = Some "8.10.7"
         , cabal-version = Some "3.2"
         , stack-version = None Text
         , enable-stack = Some False
@@ -75,7 +77,7 @@ let Matrix = { matrix : { ghc : List Text, cabal : List Text } }
 
 let DhallMatrix =
       { Type = { ghc : List GHC, cabal : List Cabal }
-      , default = { ghc = [ GHC.GHC8105 ], cabal = [ Cabal.Cabal32 ] }
+      , default = { ghc = [ GHC.GHC8107 ], cabal = [ Cabal.Cabal32 ] }
       }
 
 let Event = < push | release | pull_request >
@@ -111,6 +113,8 @@ let printGhc =
           , GHC8103 = "8.10.3"
           , GHC8104 = "8.10.4"
           , GHC8105 = "8.10.5"
+          , GHC8106 = "8.10.6"
+          , GHC8107 = "8.10.7"
           , GHC901 = "9.0.1"
           }
           ghc
@@ -193,7 +197,7 @@ let haskellEnv =
           }
 
 let defaultEnv =
-      printEnv { ghc-version = GHC.GHC8105, cabal-version = Cabal.Cabal32 }
+      printEnv { ghc-version = GHC.GHC8107, cabal-version = Cabal.Cabal32 }
 
 let latestEnv =
       printEnv { ghc-version = GHC.GHC901, cabal-version = Cabal.Cabal34 }
@@ -207,7 +211,7 @@ let matrixEnv =
       }
 
 let stackEnv =
-        { ghc-version = Some "8.8.4"
+        { ghc-version = Some "8.10.7"
         , cabal-version = None Text
         , stack-version = Some "latest"
         , enable-stack = Some True
