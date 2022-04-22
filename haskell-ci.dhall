@@ -164,7 +164,7 @@ let printMatrix =
 
 let cache =
       BuildStep.UseCache
-        { uses = "actions/cache@v2"
+        { uses = "actions/cache@v3"
         , `with` =
           { path =
                ''
@@ -179,7 +179,7 @@ let cache =
 
 let stackCache =
       BuildStep.UseCache
-        { uses = "actions/cache@v2"
+        { uses = "actions/cache@v3"
         , `with` =
           { path = "~/.stack"
           , key = "\${{ runner.os }}-\${{ matrix.ghc }}-stack"
@@ -189,7 +189,7 @@ let stackCache =
 
 let checkout =
       BuildStep.Uses
-        { uses = "actions/checkout@v1"
+        { uses = "actions/checkout@v3"
         , id = None Text
         , `with` = None VersionInfo.Type
         }
@@ -197,7 +197,7 @@ let checkout =
 let haskellEnv =
       λ(v : VersionInfo.Type) →
         BuildStep.Uses
-          { uses = "haskell/actions/setup@v1.2"
+          { uses = "haskell/actions/setup@v2"
           , id = Some "setup-haskell-cabal"
           , `with` = Some v
           }
