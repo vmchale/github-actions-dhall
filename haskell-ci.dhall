@@ -26,11 +26,14 @@ let GHC =
       | GHC902
       | GHC921
       | GHC922
+      | GHC923
+      | GHC924
+      | GHC941
       >
 
-let Cabal = < Cabal34 | Cabal32 | Cabal30 | Cabal24 | Cabal22 | Cabal20 >
+let Cabal = < Cabal36 | Cabal34 | Cabal32 | Cabal30 | Cabal24 | Cabal22 | Cabal20 >
 
-let OS = < Ubuntu | Ubuntu2004 | Ubuntu1804 | Ubuntu1604 | MacOS | Windows >
+let OS = < Ubuntu | Ubuntu2204 | Ubuntu2004 | Ubuntu1804 | Ubuntu1604 | MacOS | Windows >
 
 let VersionInfo =
       { Type =
@@ -42,8 +45,8 @@ let VersionInfo =
           , stack-setup-ghc : Optional Bool
           }
       , default =
-        { ghc-version = Some "8.10.7"
-        , cabal-version = Some "3.2"
+        { ghc-version = Some "9.0.2"
+        , cabal-version = Some "3.4"
         , stack-version = None Text
         , enable-stack = Some False
         , stack-no-global = None Bool
@@ -122,6 +125,9 @@ let printGhc =
           , GHC902 = "9.0.2"
           , GHC921 = "9.2.1"
           , GHC922 = "9.2.2"
+          , GHC923 = "9.2.3"
+          , GHC924 = "9.2.4"
+          , GHC941 = "9.4.1"
           }
           ghc
 
@@ -130,6 +136,7 @@ let printOS =
         merge
           { Windows = "windows-latest"
           , Ubuntu = "ubuntu-latest"
+          , Ubuntu2204 = "ubuntu-22.04"
           , Ubuntu2004 = "ubuntu-20.04"
           , Ubuntu1804 = "ubuntu-18.04"
           , Ubuntu1604 = "ubuntu-16.04"
@@ -140,7 +147,8 @@ let printOS =
 let printCabal =
       λ(cabal : Cabal) →
         merge
-          { Cabal34 = "3.4"
+          { Cabal36 = "3.6"
+          , Cabal34 = "3.4"
           , Cabal32 = "3.2"
           , Cabal30 = "3.0"
           , Cabal24 = "2.4"
@@ -206,7 +214,7 @@ let defaultEnv =
       printEnv { ghc-version = GHC.GHC8107, cabal-version = Cabal.Cabal32 }
 
 let latestEnv =
-      printEnv { ghc-version = GHC.GHC922, cabal-version = Cabal.Cabal34 }
+      printEnv { ghc-version = GHC.GHC941, cabal-version = Cabal.Cabal36 }
 
 let matrixOS = "\${{ matrix.operating-system }}"
 
