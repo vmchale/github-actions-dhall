@@ -1,11 +1,14 @@
 let map =
-      https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/List/map sha256:dd845ffb4568d40327f2a817eb42d1c6138b929ca758d50bc33112ef3c885680
+      https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/List/map
+        sha256:dd845ffb4568d40327f2a817eb42d1c6138b929ca758d50bc33112ef3c885680
 
 let mapOptional =
-      https://raw.githubusercontent.com/dhall-lang/dhall-lang/87993319329f3c00920d6e882365276925a4aa6a/Prelude/Optional/map sha256:501534192d988218d43261c299cc1d1e0b13d25df388937add784778ab0054fa
+      https://raw.githubusercontent.com/dhall-lang/dhall-lang/87993319329f3c00920d6e882365276925a4aa6a/Prelude/Optional/map
+        sha256:501534192d988218d43261c299cc1d1e0b13d25df388937add784778ab0054fa
 
 let concatSep =
-      https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/Text/concatSep sha256:e4401d69918c61b92a4c0288f7d60a6560ca99726138ed8ebc58dca2cd205e58
+      https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/Text/concatSep
+        sha256:e4401d69918c61b92a4c0288f7d60a6560ca99726138ed8ebc58dca2cd205e58
 
 -- See https://github.com/haskell-actions/setup/blob/main/src/versions.json
 let GHC =
@@ -29,12 +32,44 @@ let GHC =
       | GHC922
       | GHC923
       | GHC924
+      | GHC925
+      | GHC926
+      | GHC927
+      | GHC928
       | GHC941
+      | GHC942
+      | GHC943
+      | GHC944
+      | GHC945
+      | GHC946
+      | GHC947
+      | GHC961
+      | GHC962
+      | GHC963
+      | GHC981
       >
 
-let Cabal = < Cabal36 | Cabal34 | Cabal32 | Cabal30 | Cabal24 | Cabal22 | Cabal20 >
+let Cabal =
+      < Cabal310
+      | Cabal38
+      | Cabal36
+      | Cabal34
+      | Cabal32
+      | Cabal30
+      | Cabal24
+      | Cabal22
+      | Cabal20
+      >
 
-let OS = < Ubuntu | Ubuntu2204 | Ubuntu2004 | Ubuntu1804 | Ubuntu1604 | MacOS | Windows >
+let OS =
+      < Ubuntu
+      | Ubuntu2204
+      | Ubuntu2004
+      | Ubuntu1804
+      | Ubuntu1604
+      | MacOS
+      | Windows
+      >
 
 let VersionInfo =
       { Type =
@@ -46,8 +81,8 @@ let VersionInfo =
           , stack-setup-ghc : Optional Bool
           }
       , default =
-        { ghc-version = Some "9.0.2"
-        , cabal-version = Some "3.4"
+        { ghc-version = Some "9.4.7"
+        , cabal-version = Some "3.10"
         , stack-version = None Text
         , enable-stack = Some False
         , stack-no-global = None Bool
@@ -128,7 +163,21 @@ let printGhc =
           , GHC922 = "9.2.2"
           , GHC923 = "9.2.3"
           , GHC924 = "9.2.4"
+          , GHC925 = "9.2.5"
+          , GHC926 = "9.2.6"
+          , GHC927 = "9.2.7"
+          , GHC928 = "9.2.8"
           , GHC941 = "9.4.1"
+          , GHC942 = "9.4.2"
+          , GHC943 = "9.4.3"
+          , GHC944 = "9.4.4"
+          , GHC945 = "9.4.5"
+          , GHC946 = "9.4.6"
+          , GHC947 = "9.4.7"
+          , GHC961 = "9.6.1"
+          , GHC962 = "9.6.2"
+          , GHC963 = "9.6.3"
+          , GHC981 = "9.8.1"
           }
           ghc
 
@@ -148,7 +197,9 @@ let printOS =
 let printCabal =
       λ(cabal : Cabal) →
         merge
-          { Cabal36 = "3.6"
+          { Cabal310 = "3.10"
+          , Cabal38 = "3.8"
+          , Cabal36 = "3.6"
           , Cabal34 = "3.4"
           , Cabal32 = "3.2"
           , Cabal30 = "3.0"
@@ -176,10 +227,10 @@ let cache =
         { uses = "actions/cache@v3"
         , `with` =
           { path =
-               ''
-               ''${{ steps.setup-haskell-cabal.outputs.cabal-store }}
-               dist-newstyle
-               ''
+              ''
+              ''${{ steps.setup-haskell-cabal.outputs.cabal-store }}
+              dist-newstyle
+              ''
           , key =
               "\${{ runner.os }}-\${{ matrix.ghc }}-cabal-\${{ hashFiles('cabal.project.freeze') }}"
           , restoreKeys = None Text
@@ -212,10 +263,10 @@ let haskellEnv =
           }
 
 let defaultEnv =
-      printEnv { ghc-version = GHC.GHC8107, cabal-version = Cabal.Cabal32 }
+      printEnv { ghc-version = GHC.GHC947, cabal-version = Cabal.Cabal310 }
 
 let latestEnv =
-      printEnv { ghc-version = GHC.GHC941, cabal-version = Cabal.Cabal36 }
+      printEnv { ghc-version = GHC.GHC981, cabal-version = Cabal.Cabal310 }
 
 let matrixOS = "\${{ matrix.operating-system }}"
 
@@ -226,7 +277,7 @@ let matrixEnv =
       }
 
 let stackEnv =
-        { ghc-version = Some "8.10.7"
+        { ghc-version = Some "9.4.7"
         , cabal-version = None Text
         , stack-version = Some "latest"
         , enable-stack = Some True
