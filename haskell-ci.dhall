@@ -315,7 +315,11 @@ let cabalProjectFile =
             ''
         }
 
-let cabalFreeze = BuildStep.Name { name = "freeze", run = "cabal freeze" }
+let cabalFreeze =
+      BuildStep.Name
+        { name = "freeze"
+        , run = "cabal freeze --enable-tests --enable-benchmarks"
+        }
 
 let cabalDeps =
       BuildStep.Name
