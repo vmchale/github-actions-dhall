@@ -7,6 +7,7 @@ let mapOptional =
 let concatSep =
       https://raw.githubusercontent.com/dhall-lang/dhall-lang/9f259cd68870b912fbf2f2a08cd63dc3ccba9dc3/Prelude/Text/concatSep sha256:e4401d69918c61b92a4c0288f7d60a6560ca99726138ed8ebc58dca2cd205e58
 
+-- See https://github.com/haskell-actions/setup/blob/main/src/versions.json
 let GHC =
       < GHC7103
       | GHC802
