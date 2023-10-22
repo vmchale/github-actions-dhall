@@ -205,7 +205,7 @@ let checkout =
 let haskellEnv =
       λ(v : VersionInfo.Type) →
         BuildStep.Uses
-          { uses = "haskell/actions/setup@v2"
+          { uses = "haskell-actions/setup@v2"
           , id = Some "setup-haskell-cabal"
           , `with` = Some v
           }
