@@ -249,7 +249,7 @@ let stackCache =
 
 let checkout =
       BuildStep.Uses
-        { uses = "actions/checkout@v3"
+        { uses = "actions/checkout@v4"
         , id = None Text
         , `with` = None VersionInfo.Type
         }
